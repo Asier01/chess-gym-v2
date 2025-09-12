@@ -37,9 +37,10 @@ class ChessEnv(gym.Env):
 
         self.observation_mode = observation_mode
 
+        # chess960 defines Fischer Random Chess, a chess variant that randomizes the starting position of the pieces on the back rank
         self.chess960 = kwargs['chess960']
         self.board = chess.Board(chess960 = self.chess960)
-
+        
         if self.chess960:
             self.board.set_chess960_pos(np.random.randint(0, 960))
 
@@ -85,11 +86,15 @@ class ChessEnv(gym.Env):
         return [from_square, to_square, promotion, drop]
 
     def step(self, action):
+        
+        # Applies the move in UCI format to the board
         self.board.push(action)
 
         observation = self._observe()
         result = self.board.result()
         reward = (1 if result == '1-0' else -1 if result == '0-1' else 0)
+        
+        # is_game_over() checks for fifty-move rule or threefold repetition if claim_draw = true. Checking threefold repetition may be too slow
         terminated = self.board.is_game_over(claim_draw = self.claim_draw)
         info = {'turn': self.board.turn,
                 'castling_rights': self.board.castling_rights,
