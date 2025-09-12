@@ -1,5 +1,5 @@
-import gym
-from gym import spaces
+import gymnasium as gym
+from gymnasium import spaces
 
 import chess
 import chess.svg
@@ -90,7 +90,7 @@ class ChessEnv(gym.Env):
         observation = self._observe()
         result = self.board.result()
         reward = (1 if result == '1-0' else -1 if result == '0-1' else 0)
-        terminal = self.board.is_game_over(claim_draw = self.claim_draw)
+        terminated = self.board.is_game_over(claim_draw = self.claim_draw)
         info = {'turn': self.board.turn,
                 'castling_rights': self.board.castling_rights,
                 'fullmove_number': self.board.fullmove_number,
@@ -98,8 +98,10 @@ class ChessEnv(gym.Env):
                 'promoted': self.board.promoted,
                 'chess960': self.board.chess960,
                 'ep_square': self.board.ep_square}
-
-        return observation, reward, terminal, info
+        #TODO: determine when to terminate and when to truncate 
+        truncated = terminated
+                
+        return observation, reward, terminated, truncated, info
 
     def reset(self):
         self.board.reset()
