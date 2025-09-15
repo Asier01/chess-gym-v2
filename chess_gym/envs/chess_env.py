@@ -108,11 +108,12 @@ class ChessEnv(gym.Env):
                 
         return observation, reward, terminated, truncated, info
 
-    def reset(self):
+    def reset(self, seed):
         self.board.reset()
 
         if self.chess960:
-            self.board.set_chess960_pos(np.random.randint(0, 960))
+            #self.board.set_chess960_pos(np.random.randint(0, 960))
+            self.board.set_chess960_pos(seed)
 
         return self._observe()
 
