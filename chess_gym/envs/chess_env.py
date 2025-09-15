@@ -10,7 +10,7 @@ from io import BytesIO
 import cairosvg
 from PIL import Image
 
-class MoveSpace:
+class MoveSpace(gym.spaces.Space):
     def __init__(self, board):
         self.board = board
 
