@@ -127,7 +127,8 @@ class ChessEnv(gym.Env):
         if mode == 'rgb_array':
             return img
         elif mode == 'human':
-           ''' from gymnasium.envs.classic_control import rendering
+            Image.fromarray(img).show()
+            ''' from gymnasium.envs.classic_control import rendering
 
             if self.viewer is None:
                 self.viewer = rendering.SimpleImageViewer()
@@ -135,7 +136,7 @@ class ChessEnv(gym.Env):
             self.viewer.imshow(img)
             return self.viewer.isopen
             '''
-            Image.fromarray(img).show()
+           
     def close(self):
         if not self.viewer is None:
             self.viewer.close()
