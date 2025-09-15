@@ -108,8 +108,8 @@ class ChessEnv(gym.Env):
                 
         return observation, reward, terminated, truncated, info
 
-    #def reset(self, seed, options):
-    def reset(self, *args):
+    def reset(self, seed, options):
+    #def reset(self, *args):
         self.board.reset()
 
         if self.chess960:
