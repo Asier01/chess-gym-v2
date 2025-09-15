@@ -10,6 +10,7 @@ from io import BytesIO
 import cairosvg
 from PIL import Image
 
+#Gymnasium requires the action space to inherit spaces.Space class
 class MoveSpace(gym.spaces.Space):
     def __init__(self, board):
         self.board = board
@@ -108,8 +109,9 @@ class ChessEnv(gym.Env):
                 
         return observation, reward, terminated, truncated, info
 
-    def reset(self, seed, options):
-    #def reset(self, *args):
+    #Gymnasium requires handling the 'seed' and 'options' arguments 
+    def reset(self, seed=None, options=None):
+        super().reset(seed=seed)
         self.board.reset()
 
         if self.chess960:
