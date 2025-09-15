@@ -1,1 +1,1 @@
-from chess_gym_v2.envs.chess_env import *
+from chess_gym_.envs.chess_env import *
