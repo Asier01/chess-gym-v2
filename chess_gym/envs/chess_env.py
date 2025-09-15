@@ -91,6 +91,8 @@ class ChessEnv(gym.Env):
         # Applies the move in UCI format to the board
         self.board.push(action)
 
+        print(action)
+        
         observation = self._observe()
         result = self.board.result()
         reward = (1 if result == '1-0' else -1 if result == '0-1' else 0)
