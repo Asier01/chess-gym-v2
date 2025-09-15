@@ -10,6 +10,9 @@ from io import BytesIO
 import cairosvg
 from PIL import Image
 
+from IPython.display import clear_output
+
+
 #Gymnasium requires the action space to inherit spaces.Space class
 class MoveSpace(gym.spaces.Space):
     def __init__(self, board):
