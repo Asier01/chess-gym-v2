@@ -122,7 +122,7 @@ class ChessEnv(gym.Env):
 
         return self._observe()
 
-    def render(self, mode='human'):
+    def render(self, mode='rgb_array'):
         img = self._get_image()
         if mode == 'rgb_array':
             return img
