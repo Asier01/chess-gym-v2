@@ -127,6 +127,7 @@ class ChessEnv(gym.Env):
         if mode == 'rgb_array':
             return img
         elif mode == 'human':
+            clear_output(wait=True)
             display(Image.fromarray(img))
             ''' from gymnasium.envs.classic_control import rendering
 
