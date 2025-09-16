@@ -6,22 +6,18 @@
 ![GitHub](https://img.shields.io/github/license/Ryan-Rudes/chess-gym)
 
 
-Gym Chess is an environment for reinforcement learning with the OpenAI gym module.
+Gym Chess V2 is an environment for reinforcement learning updated to be compatible with the Farama gymnasium module, originaly made for the OpenAI Gym module by Ryan Rudes.
 
 <a href="https://imgbb.com/"><img src="https://i.ibb.co/Fw4fhzK/Screen-Shot-2020-10-27-at-2-30-21-PM.png" alt="Screen-Shot-2020-10-27-at-2-30-21-PM" border="0"></a>
 
 ## Installation
 
-1. Install [OpenAI Gym](https://github.com/openai/gym) and its dependencies. \
-`pip install gym`
+1. Install [Gymnasium]([https://github.com/openai/gym](https://github.com/Farama-Foundation/Gymnasium)) and its dependencies. \
+`pip install gymnasium`
 
 2. Download and install `chess_gym`: \
-`git clone https://github.com/Ryan-Rudes/chess-gym.git` \
-`cd chess-gym` \
-`python setup.py install` \
+`pip install git+https://github.com/Asier01/chess-gym-v2.git` \
  \
- Or, you can use `pip` (you may view the package [here](https://pypi.org/project/chess-gym/)): \
-`pip install chess-gym --upgrade`
 
 ## Environments
 <a href="https://ibb.co/dgLW9rH"><img src="https://i.ibb.co/NSmVhsG/Screen-Shot-2020-10-27-at-3-08-46-PM-copy.png" alt="Screen-Shot-2020-10-27-at-3-08-46-PM-copy" border="0"></a>
@@ -29,7 +25,7 @@ Gym Chess is an environment for reinforcement learning with the OpenAI gym modul
 ## Example
 You can use the standard `Chess-v0` environment as so:
 ```python
-import gym
+import gymnasium as gym
 import chess_gym
 
 env = gym.make("Chess-v0")
@@ -39,7 +35,7 @@ terminal = False
 
 while not terminal:
   action = env.action_space.sample()
-  observation, reward, terminal, info = env.step(action)
+  observation, reward, terminal, truncated, info = env.step(action)
   env.render()
   
 env.close()
@@ -50,7 +46,7 @@ There is also an environment for the Chess960 variant; its identifier is `Chess9
 ## Further Info
 This environment will return 0 reward until the game has reached a terminal state. In the case of a draw, it will still return 0 reward. Otherwise, the reward will be either 1 or -1, depending upon the winning player.
 ```python
-observation, reward, terminal, info = env.step(action)
+observation, reward, terminal, truncated, info = env.step(action)
 ```
 Here, `info` will be a dictionary containing the following information pertaining to the board configuration and game state:
 * [`turn`](https://python-chess.readthedocs.io/en/latest/core.html#chess.Board.turn): The side to move (`chess.WHITE` or `chess.BLACK`).
