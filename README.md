@@ -17,7 +17,6 @@ Gym Chess V2 is an environment for reinforcement learning updated to be compatib
 
 2. Download and install `chess_gym`: \
 `pip install git+https://github.com/Asier01/chess-gym-v2.git` \
- \
 
 ## Environments
 <a href="https://ibb.co/dgLW9rH"><img src="https://i.ibb.co/NSmVhsG/Screen-Shot-2020-10-27-at-3-08-46-PM-copy.png" alt="Screen-Shot-2020-10-27-at-3-08-46-PM-copy" border="0"></a>
