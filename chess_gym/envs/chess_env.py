@@ -136,7 +136,8 @@ class ChessEnv(gym.Env):
         elif mode == 'human':
             #clear_output(wait=True)
             #display(Image.fromarray(img))
-
+            
+            plt.clf()
             plt.imshow(img)
             plt.show()
             
