@@ -11,6 +11,7 @@ import cairosvg
 from PIL import Image
 
 from IPython.display import clear_output
+import matplotlib.pyplot as plt
 
 
 #Gymnasium requires the action space to inherit spaces.Space class
