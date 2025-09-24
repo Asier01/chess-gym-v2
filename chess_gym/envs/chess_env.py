@@ -23,7 +23,7 @@ class MoveSpace(gym.spaces.Space):
     
 class ChessEnv(gym.Env):
     """Chess Environment"""
-    metadata = {'render_modes': ['rgb_array', 'human', 'training'], 'observation.modes': ['rgb_array', 'piece_map']}
+    metadata = {'render.modes': ['rgb_array', 'human', 'training'], 'observation.modes': ['rgb_array', 'piece_map']}
 
     def __init__(self, render_size=512, observation_mode='rgb_array', claim_draw=True, **kwargs):
         super(ChessEnv, self).__init__()
