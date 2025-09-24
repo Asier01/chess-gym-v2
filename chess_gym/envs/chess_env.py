@@ -23,7 +23,7 @@ class MoveSpace(gym.spaces.Space):
     
 class ChessEnv(gym.Env):
     """Chess Environment"""
-    metadata = {'render.modes': ['rgb_array', 'human'], 'observation.modes': ['rgb_array', 'piece_map']}
+    metadata = {'render_modes': ['rgb_array', 'human', 'training'], 'observation.modes': ['rgb_array', 'piece_map']}
 
     def __init__(self, render_size=512, observation_mode='rgb_array', claim_draw=True, **kwargs):
         super(ChessEnv, self).__init__()
@@ -94,7 +94,7 @@ class ChessEnv(gym.Env):
         # Applies the move in UCI format to the board
         self.board.push(action)
 
-        print(action)
+        #print(action)
         
         observation = self._observe()
         result = self.board.result()
@@ -123,16 +123,21 @@ class ChessEnv(gym.Env):
             self.board.set_chess960_pos(np.random.randint(0, 960))
             #self.board.set_chess960_pos(seed)
 
-        return self._observe()
+        return self._observe(), {}
 
     def render(self, mode='human'):
         img = self._get_image()
-        if mode == 'rgb_array':
+
+        if mode == 'training'
+            return
+        elif mode == 'rgb_array':
             return img
         elif mode == 'human':
-            clear_output(wait=True)
-            print("AAAAA")
-            display(Image.fromarray(img))
+            #clear_output(wait=True)
+            #display(Image.fromarray(img))
+
+            plt.imshow(img)
+            
             ''' from gymnasium.envs.classic_control import rendering
 
             if self.viewer is None:
