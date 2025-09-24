@@ -128,7 +128,7 @@ class ChessEnv(gym.Env):
     def render(self, mode='human'):
         img = self._get_image()
 
-        if mode == 'training'
+        if mode == 'training':
             return
         elif mode == 'rgb_array':
             return img
