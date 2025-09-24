@@ -138,6 +138,7 @@ class ChessEnv(gym.Env):
             #display(Image.fromarray(img))
 
             plt.imshow(img)
+            plt.show()
             
             ''' from gymnasium.envs.classic_control import rendering
 
