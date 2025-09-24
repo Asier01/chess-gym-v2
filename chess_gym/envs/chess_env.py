@@ -94,7 +94,7 @@ class ChessEnv(gym.Env):
         # Applies the move in UCI format to the board
         self.board.push(action)
 
-        print(action)
+        #print(action)
         
         observation = self._observe()
         result = self.board.result()
@@ -128,17 +128,13 @@ class ChessEnv(gym.Env):
 
     def render(self, mode='human'):
         img = self._get_image()
-        if mode == 'training':
-            return
-        elif mode == 'rgb_array':
+        if mode == 'rgb_array':
             return img
         elif mode == 'human':
-            #plt.imshow(img)
-            
             clear_output(wait=True)
             display(Image.fromarray(img))
-            '''
             
+            '''
             from gymnasium.envs.classic_control import rendering
 
             if self.viewer is None:
