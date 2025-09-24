@@ -127,15 +127,19 @@ class ChessEnv(gym.Env):
         return self._observe(), {}
 
     def render(self, mode='human'):
+        print("a")
         if mode == 'training':
+            print("b")
             return
         elif mode == 'rgb_array':
+            print("c")
             img = self._get_image()
             return img
         elif mode == 'human':
+            print("d")
             #img = self._get_image()
             #plt.imshow(img)
-            print("a")
+            
             
             clear_output(wait=True)
             display(Image.fromarray(img))
