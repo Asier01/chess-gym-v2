@@ -137,7 +137,7 @@ class ChessEnv(gym.Env):
             return img
         elif mode == 'human':
             print("d")
-            #img = self._get_image()
+            img = self._get_image()
             #plt.imshow(img)
             
             
