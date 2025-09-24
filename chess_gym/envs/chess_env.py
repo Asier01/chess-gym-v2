@@ -133,12 +133,12 @@ class ChessEnv(gym.Env):
             img = self._get_image()
             return img
         elif mode == 'human':
-            img = self._get_image()
-            plt.imshow(img)
-            '''
+            #img = self._get_image()
+            #plt.imshow(img)
+            
             clear_output(wait=True)
             display(Image.fromarray(img))
-            
+            '''
             
             from gymnasium.envs.classic_control import rendering
 
