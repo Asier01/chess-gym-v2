@@ -11,7 +11,7 @@ import cairosvg
 from PIL import Image
 
 from IPython.display import clear_output
-
+import matplotlib.pyplot as plt
 
 #Gymnasium requires the action space to inherit spaces.Space class
 class MoveSpace(gym.spaces.Space):
@@ -23,7 +23,7 @@ class MoveSpace(gym.spaces.Space):
     
 class ChessEnv(gym.Env):
     """Chess Environment"""
-    metadata = {'render.modes': ['rgb_array', 'human'], 'observation.modes': ['rgb_array', 'piece_map']}
+    metadata = {'render_modes': ['rgb_array', 'human', 'training'], 'observation.modes': ['rgb_array', 'piece_map']}
 
     def __init__(self, render_size=512, observation_mode='rgb_array', claim_draw=True, **kwargs):
         super(ChessEnv, self).__init__()
@@ -122,17 +122,25 @@ class ChessEnv(gym.Env):
         if self.chess960:
             self.board.set_chess960_pos(np.random.randint(0, 960))
             #self.board.set_chess960_pos(seed)
-
-        return self._observe()
+        
+        
+        return self._observe(), {}
 
     def render(self, mode='human'):
-        img = self._get_image()
-        if mode == 'rgb_array':
+        if mode == 'training':
+            return
+        elif mode == 'rgb_array':
+            img = self._get_image()
             return img
         elif mode == 'human':
+            img = self._get_image()
+            plt.imshow(img)
+            '''
             clear_output(wait=True)
             display(Image.fromarray(img))
-            ''' from gymnasium.envs.classic_control import rendering
+            
+            
+            from gymnasium.envs.classic_control import rendering
 
             if self.viewer is None:
                 self.viewer = rendering.SimpleImageViewer()
