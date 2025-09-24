@@ -134,10 +134,10 @@ class ChessEnv(gym.Env):
         elif mode == 'rgb_array':
             return img
         elif mode == 'human':
-            #clear_output(wait=True)
+            clear_output(wait=False)
             #display(Image.fromarray(img))
             
-            plt.clf()
+
             plt.imshow(img)
             plt.show()
             
