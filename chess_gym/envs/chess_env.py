@@ -24,7 +24,7 @@ class MoveSpace(gym.spaces.Space):
     
 class ChessEnv(gym.Env):
     """Chess Environment"""
-    metadata = {'render_modes': ['rgb_array', 'human', 'training'], 'observation.modes': ['rgb_array', 'piece_map']}
+    metadata = {'render_mode': ['rgb_array', 'human', 'training'], 'observation.modes': ['rgb_array', 'piece_map']}
 
     def __init__(self, render_size=512, observation_mode='rgb_array', claim_draw=True, **kwargs):
         super(ChessEnv, self).__init__()
@@ -126,18 +126,14 @@ class ChessEnv(gym.Env):
 
         return self._observe(), {}
 
-    def render(self, mode='human'):
+    def render(self):
         img = self._get_image()
 
-        if mode == 'training':
+        if self.render_mode == 'training':
             return
-        elif mode == 'rgb_array':
+        elif self.render_mode == 'rgb_array':
             return img
-        elif mode == 'human':
-            #clear_output(wait=False)
-            #display(Image.fromarray(img))
-            
-
+        elif self.render_mode == 'human':
             plt.imshow(img)
             plt.show()
             
