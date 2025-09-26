@@ -130,7 +130,7 @@ class ChessEnv(gym.Env):
         img = self._get_image()
 
         if self.render_mode == 'training':
-            return
+            return NaN
         elif self.render_mode == 'rgb_array':
             return img
         elif self.render_mode == 'human':
