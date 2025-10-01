@@ -21,13 +21,15 @@ class MoveSpace(gym.spaces.Space):
 
     def sample(self):
         return np.random.choice(list(self.board.legal_moves))
-    
+
 class ChessEnv(gym.Env):
     """Chess Environment"""
-    metadata = {'render_mode': ['rgb_array', 'human', 'training'], 'observation.modes': ['rgb_array', 'piece_map']}
+    metadata = {'render_modes': ['rgb_array', 'human', 'training'], 'observation_modes': ['rgb_array', 'piece_map']}
 
-    def __init__(self, render_size=512, observation_mode='rgb_array', claim_draw=True, **kwargs):
+    def __init__(self, render_size=512, render_mode=None, observation_mode='rgb_array', claim_draw=True, **kwargs):
         super(ChessEnv, self).__init__()
+
+        self.render_mode = render_mode
 
         if observation_mode == 'rgb_array':
             self.observation_space = spaces.Box(low = 0, high = 255,
@@ -45,7 +47,7 @@ class ChessEnv(gym.Env):
         # chess960 defines Fischer Random Chess, a chess variant that randomizes the starting position of the pieces on the back rank
         self.chess960 = kwargs['chess960']
         self.board = chess.Board(chess960 = self.chess960)
-        
+
         if self.chess960:
             self.board.set_chess960_pos(np.random.randint(0, 960))
 
