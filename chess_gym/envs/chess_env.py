@@ -36,7 +36,7 @@ class ChessEnv(gym.Env):
                                                 shape = (render_size, render_size, 3),
                                                 dtype = np.uint8)
         elif observation_mode == 'piece_map':
-            self.observation_space = spaces.flatten(spaces.Box(low = -6, high = 6,
+            self.observation_space = spaces.flatten_space(spaces.Box(low = -6, high = 6,
                                                 shape = (8, 8),
                                                 dtype = np.int8))
         else:
