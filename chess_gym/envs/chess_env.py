@@ -13,7 +13,6 @@ from PIL import Image
 from IPython.display import clear_output
 import matplotlib.pyplot as plt
 
-
 #Gymnasium requires the action space to inherit spaces.Space class
 class MoveSpace(gym.spaces.Space):
     def __init__(self, board):
@@ -39,6 +38,7 @@ class ChessEnv(gym.Env):
             self.observation_space = spaces.flatten_space(spaces.Box(low = -6, high = 6,
                                                 shape = (8, 8),
                                                 dtype = np.int8))
+            setattr(self.observation_space, n, self.observation_space.shape[0])
         else:
             raise Exception("observation_mode must be either rgb_array or piece_map")
 
