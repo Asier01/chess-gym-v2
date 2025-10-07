@@ -42,7 +42,9 @@ def all_possible_moves(include_promotions=True, include_drops=False):
 
 ALL_POSSIBLE_MOVES = all_possible_moves()
 MOVE_TO_INDEX = {m.uci(): i for i, m in enumerate(ALL_POSSIBLE_MOVES)}
+print(MOVE_TO_INDEX)
 INDEX_TO_MOVE = {i: m for i, m in enumerate(ALL_POSSIBLE_MOVES)}
+print(INDEX_TO_MOVE)
 
 ACTION_SPACE_SIZE = len(ALL_POSSIBLE_MOVES) 
 
