@@ -13,13 +13,51 @@ from PIL import Image
 from IPython.display import clear_output
 import matplotlib.pyplot as plt
 
+
+#returns a list with all posible (legal and illegal) moves
+def all_possible_moves(include_promotions=True, include_drops=False):
+        all_moves = []
+        squares = list(chess.SQUARES)
+    
+        for from_square in squares:
+            for to_square in squares:
+                if from_square == to_sq:
+                    continue
+    
+                # Add normal move
+                all_moves.append(chess.Move(from_sq, to_sq))
+    
+                # Add promotion moves
+                if include_promotions and chess.square_rank(to_sq) in [0, 7]:
+                    for promo in [chess.QUEEN, chess.ROOK, chess.BISHOP, chess.KNIGHT]:
+                        all_moves.append(chess.Move(from_sq, to_sq, promotion=promo))
+    
+                # Add drops (for variants like Crazyhouse)
+                if include_drops:
+                    for piece_type in range(1, 7):
+                        all_moves.append(chess.Move(None, to_sq, drop=piece_type))
+    
+        return all_moves
+        
+
+ALL_POSSIBLE_MOVES = all_possible_moves()
+MOVE_TO_INDEX = {m.uci(): i for i, m in enumerate(ALL_POSSIBLE_MOVES)}
+INDEX_TO_MOVE = {i: m for i, m in enumerate(ALL_POSSIBLE_MOVES)}
+
+ACTION_SPACE_SIZE = len(ALL_POSSIBLE_MOVES) 
+
+
 #Gymnasium requires the action space to inherit spaces.Space class
-class MoveSpace(gym.spaces.Space):
+class MoveSpace(gym.spaces.Discrete):
     def __init__(self, board):
         self.board = board
-
+        super().__init__(n=ACTION_SPACE_SIZE)
+        
     def sample(self):
-        return np.random.choice(list(self.board.legal_moves))
+        legal_moves = list(self.board.legal_moves)
+        move = np.random.choice()(legal_moves)
+        
+        return MOVE_TO_INDEX.get(move.uci())
 
 class ChessEnv(gym.Env):
     """Chess Environment"""
@@ -77,6 +115,8 @@ class ChessEnv(gym.Env):
         observation = (self._get_image() if self.observation_mode == 'rgb_array' else self._get_piece_configuration())
         return observation
 
+
+    '''
     def _action_to_move(self, action):
         from_square = chess.Square(action[0])
         to_square = chess.Square(action[1])
@@ -84,19 +124,29 @@ class ChessEnv(gym.Env):
         drop = (None if action[3] == 0 else chess.Piece(chess.PieceType(action[3])), chess.Color(action[5]))
         move = chess.Move(from_square, to_square, promotion, drop)
         return move
-
+    '''
+    def _action_to_move(self, action:):
+        #Convert an integer action index to a python-chess Move.
+        return INDEX_TO_MOVE[action]
+        
+    '''
     def _move_to_action(self, move):
         from_square = move.from_square
         to_square = move.to_square
         promotion = (0 if move.promotion is None else move.promotion)
         drop = (0 if move.drop is None else move.drop)
         return [from_square, to_square, promotion, drop]
-
+    '''    
+    def _move_to_action(self, move):
+        #Convert a python-chess Move to an integer action.
+        return MOVE_TO_INDEX.get(move.uci())
+    
     def step(self, action):
         
         # Applies the move in UCI format to the board
-        self.board.push(action)
-
+        #self.board.push(action)
+        self.board.push(self._action_to_move(action))
+        
         #print(action)
         
         observation = self._observe()
