@@ -21,21 +21,21 @@ def all_possible_moves(include_promotions=True, include_drops=False):
     
         for from_square in squares:
             for to_square in squares:
-                if from_square == to_sq:
+                if from_square == to_square:
                     continue
     
                 # Add normal move
-                all_moves.append(chess.Move(from_sq, to_sq))
+                all_moves.append(chess.Move(from_square, to_square))
     
                 # Add promotion moves
-                if include_promotions and chess.square_rank(to_sq) in [0, 7]:
+                if include_promotions and chess.square_rank(to_square) in [0, 7]:
                     for promo in [chess.QUEEN, chess.ROOK, chess.BISHOP, chess.KNIGHT]:
-                        all_moves.append(chess.Move(from_sq, to_sq, promotion=promo))
+                        all_moves.append(chess.Move(from_square, to_square, promotion=promo))
     
                 # Add drops (for variants like Crazyhouse)
                 if include_drops:
                     for piece_type in range(1, 7):
-                        all_moves.append(chess.Move(None, to_sq, drop=piece_type))
+                        all_moves.append(chess.Move(None, to_square, drop=piece_type))
     
         return all_moves
         
