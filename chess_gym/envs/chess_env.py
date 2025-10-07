@@ -125,7 +125,7 @@ class ChessEnv(gym.Env):
         move = chess.Move(from_square, to_square, promotion, drop)
         return move
     '''
-    def _action_to_move(self, action:):
+    def _action_to_move(self, action):
         #Convert an integer action index to a python-chess Move.
         return INDEX_TO_MOVE[action]
         
