@@ -55,7 +55,7 @@ class MoveSpace(gym.spaces.Discrete):
         
     def sample(self):
         legal_moves = list(self.board.legal_moves)
-        move = np.random.choice()(legal_moves)
+        move = np.random.choice(legal_moves)
         
         return MOVE_TO_INDEX.get(move.uci())
 
