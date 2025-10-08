@@ -111,8 +111,8 @@ class ChessEnv(gym.Env):
         for square, piece in zip(self.board.piece_map().keys(), self.board.piece_map().values()):
             piece_map[square] = piece.piece_type * (piece.color * 2 - 1)
 
-        return piece_map.reshape((8, 8))
-
+        #return piece_map.reshape((8, 8))
+        return piece_map
     def _observe(self):
         observation = (self._get_image() if self.observation_mode == 'rgb_array' else self._get_piece_configuration())
         return observation
