@@ -142,7 +142,14 @@ class ChessEnv(gym.Env):
     def _move_to_action(self, move):
         #Convert a python-chess Move to an integer action.
         return MOVE_TO_INDEX.get(move.uci())
-    
+
+    def get_legal_moves_index(self):
+        legalMoveIndexList = []
+        for move in MOVE_TO_INDEX:
+                if move in self.board.legal_moves():
+                    legalMoveIndexList.append(MOVE_TO_INDEX.get(move.uci()))
+        return legalMoveIndexList
+                
     def step(self, action):
         
         # Applies the move in UCI format to the board
