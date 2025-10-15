@@ -53,7 +53,7 @@ ACTION_SPACE_SIZE = len(ALL_POSSIBLE_MOVES)
 class MoveSpace(gym.spaces.Discrete):
     def __init__(self, board):
         self.board = board
-        #super().__init__(n=ACTION_SPACE_SIZE)
+        super().__init__(n=ACTION_SPACE_SIZE)
         
     def sample(self):
         legal_moves = list(self.board.legal_moves)
@@ -153,8 +153,8 @@ class ChessEnv(gym.Env):
     def step(self, action):
         
         # Applies the move in UCI format to the board
-        self.board.push(action)
-        #self.board.push(self._action_to_move(action))
+        #self.board.push(action)
+        self.board.push(self._action_to_move(action))
         
         #print(action)
         
