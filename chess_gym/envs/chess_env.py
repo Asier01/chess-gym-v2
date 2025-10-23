@@ -151,19 +151,23 @@ class ChessEnv(gym.Env):
         return legalMoveIndexList
                 
     def step(self, action):
-        
-        # Applies the move in UCI format to the board
-        #self.board.push(action)
-        self.board.push(self._action_to_move(action))
-        
-        #print(action)
+
+        #if illegal action chosen, end the match as a loss
+        if action not in self._get_legal_moves_index():     
+                reward = -1
+                terminated = true
+                truncated = false
+           
+        else
+                self.board.push(self._action_to_move(action))
+                result = self.board.result()
+                reward = (1 if result == '1-0' else -1 if result == '0-1' else 0)
+                
+                # is_game_over() checks for fifty-move rule or threefold repetition if claim_draw = true. Checking threefold repetition may be too slow
+                terminated = self.board.is_game_over(claim_draw = self.claim_draw)
+                truncated = terminated
         
         observation = self._observe()
-        result = self.board.result()
-        reward = (1 if result == '1-0' else -1 if result == '0-1' else 0)
-        
-        # is_game_over() checks for fifty-move rule or threefold repetition if claim_draw = true. Checking threefold repetition may be too slow
-        terminated = self.board.is_game_over(claim_draw = self.claim_draw)
         info = {'turn': self.board.turn,
                 'castling_rights': self.board.castling_rights,
                 'fullmove_number': self.board.fullmove_number,
@@ -171,9 +175,7 @@ class ChessEnv(gym.Env):
                 'promoted': self.board.promoted,
                 'chess960': self.board.chess960,
                 'ep_square': self.board.ep_square}
-        #TODO: determine when to terminate and when to truncate 
-        truncated = terminated
-                
+                        
         return observation, reward, terminated, truncated, info
 
     #Gymnasium requires handling the 'seed' and 'options' arguments 
