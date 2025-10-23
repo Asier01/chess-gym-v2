@@ -155,8 +155,8 @@ class ChessEnv(gym.Env):
         #if illegal action chosen, end the match as a loss
         if action not in self._get_legal_moves_index():     
                 reward = -1
-                terminated = true
-                truncated = false
+                terminated = True
+                truncated = False
            
         else:
                 self.board.push(self._action_to_move(action))
