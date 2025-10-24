@@ -53,6 +53,7 @@ ACTION_SPACE_SIZE = len(ALL_POSSIBLE_MOVES)
 class MoveSpace(gym.spaces.Discrete):
     def __init__(self, board):
         self.board = board
+        self.step_counter = 0
         super().__init__(n=ACTION_SPACE_SIZE)
         
     def sample(self):
@@ -151,10 +152,12 @@ class ChessEnv(gym.Env):
         return legalMoveIndexList
                 
     def step(self, action):
-
+            
+        self.step_counter += 1
         #if illegal action chosen, end the match as a loss
         if action not in self._get_legal_moves_index():     
-                reward = -1
+                #Set the reward proportionally with the amount of legal moves done, for a max of -1
+                reward = ((-1)/self.step_counter) - 1
                 terminated = True
                 truncated = False
            
