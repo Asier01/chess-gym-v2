@@ -153,23 +153,25 @@ class ChessEnv(gym.Env):
                 
     def step(self, action):
 
-        print(self._action_to_move(action))
+        
         self.step_counter += 1
         #if illegal action chosen, end the match as a loss
         if action not in self._get_legal_moves_index():     
                 #Set the reward proportionally with the amount of legal moves done, for a max of -1
+                #Seems to converge onto always using the same move
                 reward = ((-1)/self.step_counter) - 1
                 terminated = True
                 truncated = False
            
         else:
+                print(self._action_to_move(action))
                 self.board.push(self._action_to_move(action))
                 result = self.board.result()
                 reward = (1 if result == '1-0' else -1 if result == '0-1' else 0)
-                
+                self.render()
                 # is_game_over() checks for fifty-move rule or threefold repetition if claim_draw = true. Checking threefold repetition may be too slow
                 terminated = self.board.is_game_over(claim_draw = self.claim_draw)
-                truncated = terminated
+                truncated = False
         
         observation = self._observe()
         info = {'turn': self.board.turn,
