@@ -160,6 +160,7 @@ class ChessEnv(gym.Env):
                 #Set the reward proportionally with the amount of legal moves done, for a max of -1
                 #Seems to converge onto always using the same move
                 #reward = ((-1)/self.step_counter) - 1
+                reward = -1
                 terminated = True
                 truncated = False
            
