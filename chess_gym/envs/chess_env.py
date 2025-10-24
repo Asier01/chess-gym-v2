@@ -153,7 +153,7 @@ class ChessEnv(gym.Env):
                 
     def step(self, action):
 
-        print(action)
+        print(self._action_to_move(action))
         self.step_counter += 1
         #if illegal action chosen, end the match as a loss
         if action not in self._get_legal_moves_index():     
