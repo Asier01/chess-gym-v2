@@ -148,10 +148,11 @@ class ChessEnv(gym.Env):
         for move in MOVE_TO_INDEX:
                 if move in list(self.board.legal_moves):
                     legalMoveIndexList.append(MOVE_TO_INDEX.get(move.uci()))
+        print(legalMoveIndexList[0:10])
         return legalMoveIndexList
                 
     def step(self, action):
-            
+        print(action)
         self.step_counter += 1
         #if illegal action chosen, end the match as a loss
         if action not in self._get_legal_moves_index():     
