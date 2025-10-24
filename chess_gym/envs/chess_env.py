@@ -162,6 +162,7 @@ class ChessEnv(gym.Env):
                 truncated = False
            
         else:
+                print('AAAAAAAAAAAAAAAAAA')
                 self.board.push(self._action_to_move(action))
                 result = self.board.result()
                 reward = (1 if result == '1-0' else -1 if result == '0-1' else 0)
