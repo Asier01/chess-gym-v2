@@ -147,8 +147,8 @@ class ChessEnv(gym.Env):
         legalMoveIndexList = []
         for move in MOVE_TO_INDEX:
                 move = chess.Move.from_uci(move)
-                print(move)
                 if move in list(self.board.legal_moves):
+                    print(move)
                     legalMoveIndexList.append(MOVE_TO_INDEX.get(move.uci()))
         print(legalMoveIndexList)
         return legalMoveIndexList
