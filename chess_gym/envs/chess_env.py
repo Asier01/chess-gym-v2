@@ -53,7 +53,6 @@ ACTION_SPACE_SIZE = len(ALL_POSSIBLE_MOVES)
 class MoveSpace(gym.spaces.Discrete):
     def __init__(self, board):
         self.board = board
-        self.step_counter = 0
         super().__init__(n=ACTION_SPACE_SIZE)
         
     def sample(self):
@@ -68,7 +67,7 @@ class ChessEnv(gym.Env):
 
     def __init__(self, render_size=512, render_mode=None, observation_mode='rgb_array', claim_draw=True, **kwargs):
         super(ChessEnv, self).__init__()
-
+        self.step_counter = 0
         self.render_mode = render_mode
 
         if observation_mode == 'rgb_array':
