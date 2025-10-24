@@ -156,7 +156,7 @@ class ChessEnv(gym.Env):
         #if illegal action chosen, end the match as a loss
         if action not in self._get_legal_moves_index():     
                 #Set the reward proportionally with the amount of legal moves done, for a max of -1
-                reward = ((-1)/self.step_counter) - 1
+                reward = ((-1)/(self.step_counter/5)) - 1
                 terminated = True
                 truncated = False
            
