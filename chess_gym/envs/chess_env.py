@@ -184,7 +184,7 @@ class ChessEnv(gym.Env):
     def reset(self, seed=None, options=None):
         super().reset(seed=seed)
         self.board.reset()
-
+        self.step_counter = 0
         if self.chess960:
             self.board.set_chess960_pos(np.random.randint(0, 960))
             #self.board.set_chess960_pos(seed)
