@@ -178,7 +178,7 @@ class ChessEnv(gym.Env):
         if action not in self._get_legal_moves_index():     
                 #Set the reward proportionally with the amount of legal moves done, for a max of -1
                 #Seems to converge onto always using the same move
-                reward = ((-1)/self.step_counter) - 1
+                reward = ((-5)/self.step_counter) - 1
                 #reward = -1
                 terminated = True
                 truncated = False
@@ -188,7 +188,7 @@ class ChessEnv(gym.Env):
                 self.board.push(self._action_to_move(action))
                 result = self.board.result()
                 
-                reward = (1 if result == '1-0' else -1 if result == '0-1' else 0 if result == '1/2-1/2' else ((-1)/self.step_counter))
+                reward = (1 if result == '1-0' else -1 if result == '0-1' else 0 if result == '1/2-1/2' else ((-5)/self.step_counter))
 
                 #reward = (1000 if result == '1-0' else -1 if result == '0-1' else stockfish_evaluation(self.board))
                 print('RIGHT ACTION -',action,' REWARD = ',reward)
