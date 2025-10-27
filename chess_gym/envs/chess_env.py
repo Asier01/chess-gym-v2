@@ -3,6 +3,7 @@ from gymnasium import spaces
 
 import chess
 import chess.svg
+import chess.engine
 
 import numpy as np
 
@@ -13,6 +14,11 @@ from PIL import Image
 from IPython.display import clear_output
 import matplotlib.pyplot as plt
 
+#Evaluate current state using the stockfish chess engine
+def stockfish_evaluation(board, time_limit = 0.01):
+    engine = chess.engine.SimpleEngine.popen_uci("/home/stockfish/stockfish-ubuntu-x86-64-avx2")
+    result = engine.analyse(board, chess.engine.Limit(time=time_limit))
+    return result['score']
 
 #returns a list with all posible (legal and illegal) moves
 def all_possible_moves(include_promotions=True, include_drops=False):
@@ -165,11 +171,13 @@ class ChessEnv(gym.Env):
                 truncated = False
            
         else:
-                #print(self._action_to_move(action))
+                
                 self.board.push(self._action_to_move(action))
                 result = self.board.result()
-                reward = (1 if result == '1-0' else -1 if result == '0-1' else 0)
-                #self.render()
+                #reward = (1 if result == '1-0' else -1 if result == '0-1' else 0)
+
+                reward = (1000 if result == '1-0' else -1 if result == '0-1' else stockfish_evaluation(self.board))
+
                 # is_game_over() checks for fifty-move rule or threefold repetition if claim_draw = true. Checking threefold repetition may be too slow
                 terminated = self.board.is_game_over(claim_draw = self.claim_draw)
                 truncated = False
