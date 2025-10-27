@@ -175,9 +175,9 @@ class ChessEnv(gym.Env):
                 
                 self.board.push(self._action_to_move(action))
                 result = self.board.result()
-                #reward = (1 if result == '1-0' else -1 if result == '0-1' else 0)
+                reward = (1 if result == '1-0' else -1 if result == '0-1' else 0)
 
-                reward = (1000 if result == '1-0' else -1 if result == '0-1' else stockfish_evaluation(self.board))
+                #reward = (1000 if result == '1-0' else -1 if result == '0-1' else stockfish_evaluation(self.board))
 
                 # is_game_over() checks for fifty-move rule or threefold repetition if claim_draw = true. Checking threefold repetition may be too slow
                 terminated = self.board.is_game_over(claim_draw = self.claim_draw)
