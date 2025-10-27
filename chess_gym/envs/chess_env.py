@@ -1,6 +1,5 @@
 import gymnasium as gym
 from gymnasium import spaces
-import torch
 
 import chess
 import chess.svg
@@ -19,7 +18,7 @@ import matplotlib.pyplot as plt
 def stockfish_evaluation(board, time_limit = 0.01):
     engine = chess.engine.SimpleEngine.popen_uci("/usr/stockfish/stockfish-ubuntu-x86-64-avx2")
     result = engine.analyse(board, chess.engine.Limit(time=time_limit))
-    return torch.tensor(result['score'].relative.score(), dtype=torch.int16)
+    return [result['score'].relative.score()]
 
 #returns a list with all posible (legal and illegal) moves
 def all_possible_moves(include_promotions=True, include_drops=False):
