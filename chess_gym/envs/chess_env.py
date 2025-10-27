@@ -172,7 +172,7 @@ class ChessEnv(gym.Env):
                 
     def step(self, action):
 
-        
+        print(action)
         self.step_counter += 1
         #if illegal action chosen, end the match as a loss
         if action not in self._get_legal_moves_index():     
@@ -188,7 +188,7 @@ class ChessEnv(gym.Env):
                 self.board.push(self._action_to_move(action))
                 result = self.board.result()
                 
-                reward = (1 if result == '1-0' else -1 if result == '0-1' else 0 if result == '1/2-1/2' else ((-1)/self.step_counter) - 1)
+                reward = (1 if result == '1-0' else -1 if result == '0-1' else 0 if result == '1/2-1/2' else ((-1)/self.step_counter))
 
                 #reward = (1000 if result == '1-0' else -1 if result == '0-1' else stockfish_evaluation(self.board))
 
