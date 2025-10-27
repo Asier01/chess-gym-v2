@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 def stockfish_evaluation(board, time_limit = 0.01):
     engine = chess.engine.SimpleEngine.popen_uci("/usr/stockfish/stockfish-ubuntu-x86-64-avx2")
     result = engine.analyse(board, chess.engine.Limit(time=time_limit))
-    print(result['score'])
+    print(result['score'].relative)
     return result['score']
 
 #returns a list with all posible (legal and illegal) moves
