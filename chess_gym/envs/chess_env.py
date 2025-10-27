@@ -34,9 +34,21 @@ def all_possible_moves(include_promotions=False, include_drops=False):
                 all_moves.append(chess.Move(from_square, to_square))
     
                 # Add promotion moves
-                if include_promotions and chess.square_rank(to_square) in [0, 7]:
-                    for promo in [chess.QUEEN, chess.ROOK, chess.BISHOP, chess.KNIGHT]:
-                        all_moves.append(chess.Move(from_square, to_square, promotion=promo))
+                if include_promotions:
+                    promotion_pieces = [chess.QUEEN, chess.ROOK, chess.BISHOP, chess.KNIGHT]
+                    # Handle promotion possibilities
+                    from_rank = chess.square_rank(from_square)
+                    to_rank = chess.square_rank(to_square)
+            
+                    # White pawn promotion
+                    if from_rank == 6 and to_rank == 7:
+                        for promo in promotion_pieces:
+                            all_moves.append(chess.Move(from_square, to_square, promotion=promo))
+                    
+                    # Black pawn promotion
+                    if from_rank == 1 and to_rank == 0:
+                        for promo in promotion_pieces:
+                            all_moves.append(chess.Move(from_square, to_square, promotion=promo))
     
                 # Add drops (for variants like Crazyhouse)
                 if include_drops:
