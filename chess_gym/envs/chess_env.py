@@ -182,7 +182,7 @@ class ChessEnv(gym.Env):
                 #reward = -1
                 terminated = True
                 truncated = False
-                print('RIGHT ACTION, REWARD = ',reward)
+                print('WRONG ACTION, REWARD = ',reward)
         else:
                 
                 self.board.push(self._action_to_move(action))
@@ -191,7 +191,7 @@ class ChessEnv(gym.Env):
                 reward = (1 if result == '1-0' else -1 if result == '0-1' else 0 if result == '1/2-1/2' else ((-1)/self.step_counter))
 
                 #reward = (1000 if result == '1-0' else -1 if result == '0-1' else stockfish_evaluation(self.board))
-                print('WORNG ACTION, REWARD = ',reward)
+                print('RIGHT ACTION, REWARD = ',reward)
                 # is_game_over() checks for fifty-move rule or threefold repetition if claim_draw = true. Checking threefold repetition may be too slow
                 terminated = self.board.is_game_over(claim_draw = self.claim_draw)
                 truncated = False
