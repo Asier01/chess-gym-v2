@@ -105,7 +105,7 @@ class ChessEnv(gym.Env):
         # chess960 defines Fischer Random Chess, a chess variant that randomizes the starting position of the pieces on the back rank
         self.chess960 = kwargs['chess960']
         self.board = chess.Board(chess960 = self.chess960)
-        print(stockfish_evaluation(self.board))
+        #print(stockfish_evaluation(self.board))
         
         if self.chess960:
             self.board.set_chess960_pos(np.random.randint(0, 960))
@@ -187,9 +187,10 @@ class ChessEnv(gym.Env):
                 
                 self.board.push(self._action_to_move(action))
                 result = self.board.result()
-                #reward = (1 if result == '1-0' else -1 if result == '0-1' else 0)
+                
+                reward = (1 if result == '1-0' else -1 if result == '0-1' else 0)
 
-                reward = (1000 if result == '1-0' else -1 if result == '0-1' else stockfish_evaluation(self.board))
+                #reward = (1000 if result == '1-0' else -1 if result == '0-1' else stockfish_evaluation(self.board))
 
                 # is_game_over() checks for fifty-move rule or threefold repetition if claim_draw = true. Checking threefold repetition may be too slow
                 terminated = self.board.is_game_over(claim_draw = self.claim_draw)
