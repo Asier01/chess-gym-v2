@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 
 #Evaluate current state using the stockfish chess engine
 def stockfish_evaluation(board, time_limit = 0.01):
-    engine = chess.engine.SimpleEngine.popen_uci("/home/stockfish/stockfish-ubuntu-x86-64-avx2")
+    engine = chess.engine.SimpleEngine.popen_uci("/usr/stockfish/stockfish-ubuntu-x86-64-avx2")
     result = engine.analyse(board, chess.engine.Limit(time=time_limit))
     return result['score']
 
