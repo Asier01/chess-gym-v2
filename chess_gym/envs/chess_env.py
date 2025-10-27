@@ -76,7 +76,7 @@ class ChessEnv(gym.Env):
         super(ChessEnv, self).__init__()
         self.step_counter = 0
         self.render_mode = render_mode
-
+       
         if observation_mode == 'rgb_array':
             self.observation_space = spaces.Box(low = 0, high = 255,
                                                 shape = (render_size, render_size, 3),
@@ -94,7 +94,7 @@ class ChessEnv(gym.Env):
         # chess960 defines Fischer Random Chess, a chess variant that randomizes the starting position of the pieces on the back rank
         self.chess960 = kwargs['chess960']
         self.board = chess.Board(chess960 = self.chess960)
-
+        stockfish_evaluation(self.board)
         if self.chess960:
             self.board.set_chess960_pos(np.random.randint(0, 960))
 
