@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 def stockfish_evaluation(board, time_limit = 0.01):
     engine = chess.engine.SimpleEngine.popen_uci("/usr/stockfish/stockfish-ubuntu-x86-64-avx2")
     result = engine.analyse(board, chess.engine.Limit(time=time_limit))
-    return [result['score'].relative.score()]
+    return result['score'].relative.score()
 
 #returns a list with all posible (legal and illegal) moves
 def all_possible_moves(include_promotions=True, include_drops=False):
@@ -105,7 +105,8 @@ class ChessEnv(gym.Env):
         # chess960 defines Fischer Random Chess, a chess variant that randomizes the starting position of the pieces on the back rank
         self.chess960 = kwargs['chess960']
         self.board = chess.Board(chess960 = self.chess960)
-        stockfish_evaluation(self.board)
+        print(stockfish_evaluation(self.board))
+        
         if self.chess960:
             self.board.set_chess960_pos(np.random.randint(0, 960))
 
