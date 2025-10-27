@@ -21,7 +21,7 @@ def stockfish_evaluation(board, time_limit = 0.01):
     return result['score'].relative.score()
 
 #returns a list with all posible (legal and illegal) moves
-def all_possible_moves(include_promotions=False, include_drops=False):
+def all_possible_moves(include_promotions=True, include_drops=False):
         all_moves = []
         squares = list(chess.SQUARES)
     
