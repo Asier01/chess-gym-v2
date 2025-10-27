@@ -172,7 +172,7 @@ class ChessEnv(gym.Env):
                 
     def step(self, action):
 
-        print(action)
+        #print(action)
         self.step_counter += 1
         #if illegal action chosen, end the match as a loss
         if action not in self._get_legal_moves_index():     
@@ -195,7 +195,6 @@ class ChessEnv(gym.Env):
                 # is_game_over() checks for fifty-move rule or threefold repetition if claim_draw = true. Checking threefold repetition may be too slow
                 terminated = self.board.is_game_over(claim_draw = self.claim_draw)
                 truncated = False
-        self.render()
         observation = self._observe()
         info = {'turn': self.board.turn,
                 'castling_rights': self.board.castling_rights,
