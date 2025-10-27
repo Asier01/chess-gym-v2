@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 def stockfish_evaluation(board, time_limit = 0.01):
     engine = chess.engine.SimpleEngine.popen_uci("/usr/stockfish/stockfish-ubuntu-x86-64-avx2")
     result = engine.analyse(board, chess.engine.Limit(time=time_limit))
-    return result['score'].relative.score()
+    return int(result['score'].relative.score())
 
 #returns a list with all posible (legal and illegal) moves
 def all_possible_moves(include_promotions=True, include_drops=False):
@@ -186,9 +186,9 @@ class ChessEnv(gym.Env):
                 
                 self.board.push(self._action_to_move(action))
                 result = self.board.result()
-                reward = (1 if result == '1-0' else -1 if result == '0-1' else 0)
+                #reward = (1 if result == '1-0' else -1 if result == '0-1' else 0)
 
-                #reward = (1000 if result == '1-0' else -1 if result == '0-1' else stockfish_evaluation(self.board))
+                reward = (1000 if result == '1-0' else -1 if result == '0-1' else stockfish_evaluation(self.board))
 
                 # is_game_over() checks for fifty-move rule or threefold repetition if claim_draw = true. Checking threefold repetition may be too slow
                 terminated = self.board.is_game_over(claim_draw = self.claim_draw)
