@@ -83,11 +83,13 @@ class ChessEnv(gym.Env):
     """Chess Environment"""
     metadata = {'render_modes': ['rgb_array', 'human', 'training'], 'observation_modes': ['rgb_array', 'piece_map']}
 
-    def __init__(self, render_size=512, render_mode=None, observation_mode='rgb_array', claim_draw=True, **kwargs):
+    def __init__(self, render_size=512, render_mode=None, observation_mode='rgb_array', claim_draw=True,  logging = False, **kwargs):
         super(ChessEnv, self).__init__()
         self.step_counter = 0
         self.render_mode = render_mode
-       
+        self.logging = logging
+        self.terminated_episodes = 0
+        
         if observation_mode == 'rgb_array':
             self.observation_space = spaces.Box(low = 0, high = 255,
                                                 shape = (render_size, render_size, 3),
@@ -174,6 +176,10 @@ class ChessEnv(gym.Env):
 
         #print(action)
         self.step_counter += 1
+
+        
+            
+        
         #if illegal action chosen, end the match as a loss with worse reward
         if action not in self._get_legal_moves_index():     
                 #reward = ((-1)/self.step_counter) - 1
@@ -181,6 +187,8 @@ class ChessEnv(gym.Env):
                 terminated = True
                 truncated = False
                 #print('WRONG ACTION -',action,' REWARD = ',reward)
+                if self.logging:
+                    self.terminated_episodes +=1
         else:
                 
                 self.board.push(self._action_to_move(action))
