@@ -14,11 +14,38 @@ from PIL import Image
 from IPython.display import clear_output
 import matplotlib.pyplot as plt
 
+
+# =====================================================
+# Utils
+# =====================================================
+
+STOCKFISH_PATH = "/usr/stockfish/stockfish-ubuntu-x86-64-avx2"
+
+MAX_MOVES = 150
+
+# For material evaluation
+PIECE_VALUES = {
+    chess.PAWN: 1,
+    chess.KNIGHT: 3,
+    chess.BISHOP: 3,
+    chess.ROOK: 5,
+    chess.QUEEN: 9
+}
+
 #Evaluate current state using the stockfish chess engine
 def stockfish_evaluation(board, time_limit = 0.01):
-    engine = chess.engine.SimpleEngine.popen_uci("/usr/stockfish/stockfish-ubuntu-x86-64-avx2")
+    engine = chess.engine.SimpleEngine.popen_uci(STOCKFISH_PATH)
     result = engine.analyse(board, chess.engine.Limit(time=time_limit))
+    engine.quit()
     return result['score'].relative.score()
+    
+#Evaluate current state using current available material
+#TODO: be able to use it for black player aswell
+def material_evaluation(board):
+    white_score = sum(PIECE_VALUES.get(piece.piece_type, 0) for piece in board.piece_map().values() if piece.color)
+    black_score = sum(PIECE_VALUES.get(piece.piece_type, 0) for piece in board.piece_map().values() if not piece.color)
+    # Normalize to [-1, 1]
+    return (white_score - black_score) / 39.0  # 39 = total material available
 
 #returns a list with all posible (legal and illegal) moves
 def all_possible_moves(include_promotions=True, include_drops=False):
@@ -67,6 +94,12 @@ INDEX_TO_MOVE = {i: m for i, m in enumerate(ALL_POSSIBLE_MOVES)}
 ACTION_SPACE_SIZE = len(ALL_POSSIBLE_MOVES) 
 
 
+
+
+# =====================================================
+# Action Space
+# =====================================================
+
 #Gymnasium requires the action space to inherit spaces.Space class
 class MoveSpace(gym.spaces.Discrete):
     def __init__(self, board):
@@ -79,11 +112,15 @@ class MoveSpace(gym.spaces.Discrete):
         
         return MOVE_TO_INDEX.get(move.uci())
 
+# =====================================================
+# Enviroment
+# =====================================================
+
 class ChessEnv(gym.Env):
     """Chess Environment"""
     metadata = {'render_modes': ['rgb_array', 'human', 'training'], 'observation_modes': ['rgb_array', 'piece_map']}
 
-    def __init__(self, render_size=512, render_mode=None, observation_mode='rgb_array', claim_draw=True,  logging = False, render_steps = False, steps_per_render = 50, **kwargs):
+    def __init__(self, render_size=512, render_mode=None, observation_mode='rgb_array', claim_draw=True,  logging = False, render_steps = False, steps_per_render = 50, use_eval = None, **kwargs):
         super(ChessEnv, self).__init__()
         self.render_steps = render_steps
         self.steps_per_render = steps_per_render
@@ -91,6 +128,7 @@ class ChessEnv(gym.Env):
         self.render_mode = render_mode
         self.logging = logging
         self.terminated_episodes = 0
+        self.use_eval = use_eval
         if observation_mode == 'rgb_array':
             self.observation_space = spaces.Box(low = 0, high = 255,
                                                 shape = (render_size, render_size, 3),
@@ -119,6 +157,11 @@ class ChessEnv(gym.Env):
         self.viewer = None
 
         self.action_space = MoveSpace(self.board)
+
+
+    # =====================================================
+    # Observation utils
+    # =====================================================
     def _get_image(self):
         out = BytesIO()
         bytestring = chess.svg.board(self.board, size = self.render_size).encode('utf-8')
@@ -131,14 +174,17 @@ class ChessEnv(gym.Env):
 
         for square, piece in zip(self.board.piece_map().keys(), self.board.piece_map().values()):
             piece_map[square] = piece.piece_type * (piece.color * 2 - 1)
-
-        #return piece_map.reshape((8, 8))
+            
         return piece_map
+        
     def _observe(self):
         observation = (self._get_image() if self.observation_mode == 'rgb_array' else self._get_piece_configuration())
         return observation
 
 
+    # =====================================================
+    # Action utils
+    # =====================================================
     '''
     def _action_to_move(self, action):
         from_square = chess.Square(action[0])
@@ -177,12 +223,13 @@ class ChessEnv(gym.Env):
         all_actions = set(range(ACTION_SPACE_SIZE))
         mask = np.array([move in legal_actions for move in all_actions], dtype=bool)
         return mask
-    def step(self, action):
 
-        
-        if self.step_counter == 0:
-            self.terminated_episodes +=1
-            print("Episode number - ", self.terminated_episodes)
+    # =====================================================
+    # Core Gymnasium functions
+    # =====================================================
+    
+    def step(self, action):
+        # Optional render every few steps
         if self.step_counter % self.steps_per_render == 0 and self.render_steps:
             self.render()
 
@@ -192,21 +239,37 @@ class ChessEnv(gym.Env):
                 reward = -1
                 terminated = True
                 truncated = False
-                #print('WRONG ACTION -',action,' REWARD = ',reward)
-                if self.logging:
-                    self.terminated_episodes +=1
+            
         else:
                 
                 self.board.push(self._action_to_move(action))
                 result = self.board.result()
-            
-                reward = (1 if result == '1-0' else -1 if result == '0-1' else 0)
-                #reward = (1000 if result == '1-0' else -1 if result == '0-1' else stockfish_evaluation(self.board))
                 
-                #print('RIGHT ACTION -',action,' REWARD = ',reward)
                 # is_game_over() checks for fifty-move rule or threefold repetition if claim_draw = true. Checking threefold repetition may be too slow
                 terminated = self.board.is_game_over(claim_draw = self.claim_draw)
-                truncated = False
+                truncated = self.step_counter > MAX_MOVES
+                #TODO: calculate reward if truncated or terminated with self.use_eval
+
+                #reward = (1 if result == '1-0' else -1 if result == '0-1' else 0)
+                if terminated:
+                    reward = (1 if result == '1-0' else -1 if result == '0-1' else 0)
+                elif truncated:
+                    match self.use_eval:
+                    
+                        #Use material left for intermediate evaluation
+                        case "material":
+                            reward = material_evaluation(self.board)
+                            
+                        #Use Stockfish engine for intermediate evaluation    
+                        case "stockfish":
+                            eval_cp = stockfish_evaluation(self.board)
+                            reward = np.clip(eval_cp / 1000.0, -1.0, 1.0)  # normalize centipawns given by the engine
+                            
+                        case _:
+                            reward = 0
+                else:
+                    reward = 0
+            
         observation = self._observe()
         info = {'turn': self.board.turn,
                 'castling_rights': self.board.castling_rights,
@@ -228,7 +291,10 @@ class ChessEnv(gym.Env):
             #self.board.set_chess960_pos(seed)
 
         return self._observe(), {}
-
+        
+    # ==========================================
+    # Rendering
+    # ==========================================
     def render(self):
         img = self._get_image()
 
