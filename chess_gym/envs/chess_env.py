@@ -253,18 +253,20 @@ class ChessEnv(gym.Env):
                 #reward = (1 if result == '1-0' else -1 if result == '0-1' else 0)
                 if terminated:
                     reward = (1 if result == '1-0' else -1 if result == '0-1' else 0)
+                    print("TERMINATED REWARD - ",reward)
                 elif truncated:
                     match self.use_eval:
                     
                         #Use material left for intermediate evaluation
                         case "material":
                             reward = material_evaluation(self.board)
-                            
+                            print("MATERIAL REWARD - ",reward)
+                    
                         #Use Stockfish engine for intermediate evaluation    
                         case "stockfish":
                             eval_cp = stockfish_evaluation(self.board)
                             reward = np.clip(eval_cp / 1000.0, -1.0, 1.0)  # normalize centipawns given by the engine
-                            
+                            print("STOCKFISH REWARD - ",reward)
                         case _:
                             reward = 0
                 else:
