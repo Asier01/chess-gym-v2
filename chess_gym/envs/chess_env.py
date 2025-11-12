@@ -177,12 +177,8 @@ class ChessEnv(gym.Env):
 
         print(action)
         self.step_counter += 1
-
-        ####
-        print("a")
-        print(list(range(ACTION_SPACE_SIZE)))
-        mask = [a in self._get_legal_moves_index() for a in range(ACTION_SPACE_SIZE)]
-        print("b")
+        print(set(range(ACTION_SPACE_SIZE)))
+        mask = [a in self._get_legal_moves_index() for a in set(range(ACTION_SPACE_SIZE))]
         print(mask)
         ####
             
