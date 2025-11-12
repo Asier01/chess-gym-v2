@@ -180,7 +180,9 @@ class ChessEnv(gym.Env):
     def step(self, action):
 
         
- 
+        if self.step_counter == 0 and self.render_steps:
+            self.terminated_episodes +=1
+            print("episode number", terminated_episodes)
         if self.step_counter % self.steps_per_render == 0 and self.render_steps:
             self.render()
 
