@@ -236,7 +236,7 @@ class ChessEnv(gym.Env):
             return img
         elif self.render_mode == 'human':
             plt.imshow(img)
-            plt.show()
+            plt.show(block=False)
             plt.pause(0.001)
             ''' from gymnasium.envs.classic_control import rendering
 
