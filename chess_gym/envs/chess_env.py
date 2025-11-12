@@ -89,7 +89,6 @@ class ChessEnv(gym.Env):
         self.render_mode = render_mode
         self.logging = logging
         self.terminated_episodes = 0
-        print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
         if observation_mode == 'rgb_array':
             self.observation_space = spaces.Box(low = 0, high = 255,
                                                 shape = (render_size, render_size, 3),
@@ -118,7 +117,6 @@ class ChessEnv(gym.Env):
         self.viewer = None
 
         self.action_space = MoveSpace(self.board)
-        print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
     def _get_image(self):
         out = BytesIO()
         bytestring = chess.svg.board(self.board, size = self.render_size).encode('utf-8')
@@ -181,7 +179,9 @@ class ChessEnv(gym.Env):
         self.step_counter += 1
 
         ####
+        print("a")
         mask = [move in self._get_legal_moves_index() for move in range(ACTION_SPACE_SIZE)]
+        print("b")
         print(mask)
         ####
             
