@@ -237,7 +237,7 @@ class ChessEnv(gym.Env):
         elif self.render_mode == 'human':
             plt.imshow(img)
             plt.show()
-            
+            plt.pause(0.001)
             ''' from gymnasium.envs.classic_control import rendering
 
             if self.viewer is None:
