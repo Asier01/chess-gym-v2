@@ -89,10 +89,7 @@ class ChessEnv(gym.Env):
         self.render_mode = render_mode
         self.logging = logging
         self.terminated_episodes = 0
-        ####
-        mask = [move in self._get_legal_moves_index() for move in range(ACTION_SPACE_SIZE)]
-        print(mask)
-        ####
+       
         if observation_mode == 'rgb_array':
             self.observation_space = spaces.Box(low = 0, high = 255,
                                                 shape = (render_size, render_size, 3),
@@ -183,7 +180,10 @@ class ChessEnv(gym.Env):
         #print(action)
         self.step_counter += 1
 
-        
+        ####
+        mask = [move in self._get_legal_moves_index() for move in range(ACTION_SPACE_SIZE)]
+        print(mask)
+        ####
             
         
         #if illegal action chosen, end the match as a loss with worse reward
