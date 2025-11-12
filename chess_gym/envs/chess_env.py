@@ -175,10 +175,12 @@ class ChessEnv(gym.Env):
         return mask
     def step(self, action):
 
-        print(action)
         self.step_counter += 1
-        print(set(range(ACTION_SPACE_SIZE)))
-        mask = [a in self._get_legal_moves_index() for a in set(range(ACTION_SPACE_SIZE))]
+
+        
+        legal_actions = self._get_legal_moves_index()
+        all_actions = set(range(ACTION_SPACE_SIZE))
+        mask = [a in legal_actions for a in all_actions]
         print(mask)
         ####
             
