@@ -269,6 +269,7 @@ class ChessEnv(gym.Env):
                             #Sometines stockfish evaluation returns a NoneType
                             if eval_cp is None:
                                 reward = 0
+                                print(action)
                                 print(self._action_to_move(action))
                                 self.render()
                             else:
