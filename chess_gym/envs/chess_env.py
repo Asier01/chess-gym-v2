@@ -182,8 +182,8 @@ class ChessEnv(gym.Env):
         
         #if illegal action chosen, end the match as a loss with worse reward
         if action not in self._get_legal_moves_index():     
-                reward = ((-1)/self.step_counter) - 1
-                #reward = -1
+                #reward = ((-1)/self.step_counter) - 1
+                reward = -1
                 terminated = True
                 truncated = False
                 #print('WRONG ACTION -',action,' REWARD = ',reward)
