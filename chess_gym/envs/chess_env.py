@@ -207,7 +207,8 @@ class ChessEnv(gym.Env):
                 'halfmove_clock': self.board.halfmove_clock,
                 'promoted': self.board.promoted,
                 'chess960': self.board.chess960,
-                'ep_square': self.board.ep_square}              
+                'ep_square': self.board.ep_square}    
+        self.render()
         return observation, reward, terminated, truncated, info
 
     #Gymnasium requires handling the 'seed' and 'options' arguments 
