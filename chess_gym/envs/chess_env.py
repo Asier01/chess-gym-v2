@@ -260,7 +260,7 @@ class ChessEnv(gym.Env):
                         #Use material left for intermediate evaluation
                         case "material":
                             reward = material_evaluation(self.board)
-                            print("MATERIAL REWARD - ",reward)
+                            #print("MATERIAL REWARD - ",reward)
                     
                         #Use Stockfish engine for intermediate evaluation    
                         case "stockfish":
@@ -271,7 +271,7 @@ class ChessEnv(gym.Env):
                                 reward = 0
                             else:
                                 reward = np.clip(eval_cp / 1000.0, -1.0, 1.0)  # normalize centipawns given by the engine
-                            print("STOCKFISH REWARD - ",reward)
+                            #print("STOCKFISH REWARD - ",reward)
                         case _:
                             reward = 0
                 else:
