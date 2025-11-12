@@ -180,7 +180,7 @@ class ChessEnv(gym.Env):
 
         ####
         print("a")
-        print(ACTION_SPACE_SIZE)
+        print(range(ACTION_SPACE_SIZE))
         mask = [a in self._get_legal_moves_index() for a in range(ACTION_SPACE_SIZE)]
         print("b")
         print(mask)
