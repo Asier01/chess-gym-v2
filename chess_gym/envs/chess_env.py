@@ -181,7 +181,7 @@ class ChessEnv(gym.Env):
 
         
  
-        if self.step_counter % steps_per_render == 0 and self.render_steps:
+        if self.step_counter % self.steps_per_render == 0 and self.render_steps:
             self.render()
 
         #if illegal action chosen, end the match as a loss with worse reward
