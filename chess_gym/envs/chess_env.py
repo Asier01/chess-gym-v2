@@ -83,9 +83,10 @@ class ChessEnv(gym.Env):
     """Chess Environment"""
     metadata = {'render_modes': ['rgb_array', 'human', 'training'], 'observation_modes': ['rgb_array', 'piece_map']}
 
-    def __init__(self, render_size=512, render_mode=None, observation_mode='rgb_array', claim_draw=True,  logging = False, render_steps = False, **kwargs):
+    def __init__(self, render_size=512, render_mode=None, observation_mode='rgb_array', claim_draw=True,  logging = False, render_steps = False, steps_per_render = 50, **kwargs):
         super(ChessEnv, self).__init__()
         self.render_steps = render_steps
+        self.steps_per_render = steps_per_render
         self.step_counter = 0
         self.render_mode = render_mode
         self.logging = logging
@@ -178,10 +179,11 @@ class ChessEnv(gym.Env):
         return mask
     def step(self, action):
 
-        self.step_counter += 1
-        print(self.step_counter)
-        if self.step_counter % 50 == 0:
+        
+ 
+        if self.step_counter % steps_per_render == 0 and self.render_steps:
             self.render()
+
         #if illegal action chosen, end the match as a loss with worse reward
         if action not in self._get_legal_moves_index():     
                 #reward = ((-1)/self.step_counter) - 1
@@ -211,8 +213,7 @@ class ChessEnv(gym.Env):
                 'promoted': self.board.promoted,
                 'chess960': self.board.chess960,
                 'ep_square': self.board.ep_square}    
-        if self.render_steps:
-            self.render()
+        self.step_counter += 1
         return observation, reward, terminated, truncated, info
 
     #Gymnasium requires handling the 'seed' and 'options' arguments 
