@@ -171,19 +171,13 @@ class ChessEnv(gym.Env):
         return legalMoveIndexList
     
     def get_action_mask(self):
-        mask = [move in self._get_legal_moves_index() for move in list(range(ACTION_SPACE_SIZE))]
+        legal_actions = self._get_legal_moves_index()
+        all_actions = set(range(ACTION_SPACE_SIZE))
+        mask = np.array([move in legal_actions for move in all_actions], dtype=bool)
         return mask
     def step(self, action):
 
         self.step_counter += 1
-
-        
-        legal_actions = self._get_legal_moves_index()
-        all_actions = set(range(ACTION_SPACE_SIZE))
-        mask = [a in legal_actions for a in all_actions]
-        print(mask)
-        ####
-            
         
         #if illegal action chosen, end the match as a loss with worse reward
         if action not in self._get_legal_moves_index():     
