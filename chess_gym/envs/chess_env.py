@@ -179,7 +179,7 @@ class ChessEnv(gym.Env):
     def step(self, action):
 
         self.step_counter += 1
-        
+        print(self.step_counter)
         #if illegal action chosen, end the match as a loss with worse reward
         if action not in self._get_legal_moves_index():     
                 #reward = ((-1)/self.step_counter) - 1
