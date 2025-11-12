@@ -171,7 +171,7 @@ class ChessEnv(gym.Env):
         return legalMoveIndexList
     
     def get_action_mask(self):
-        mask = [move in self._get_legal_moves_index() for move in range(ACTION_SPACE_SIZE)]
+        mask = [move in self._get_legal_moves_index() for move in list(range(ACTION_SPACE_SIZE))]
         return mask
     def step(self, action):
 
