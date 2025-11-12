@@ -83,8 +83,9 @@ class ChessEnv(gym.Env):
     """Chess Environment"""
     metadata = {'render_modes': ['rgb_array', 'human', 'training'], 'observation_modes': ['rgb_array', 'piece_map']}
 
-    def __init__(self, render_size=512, render_mode=None, observation_mode='rgb_array', claim_draw=True,  logging = False, **kwargs):
+    def __init__(self, render_size=512, render_mode=None, observation_mode='rgb_array', claim_draw=True,  logging = False, render_steps = False, **kwargs):
         super(ChessEnv, self).__init__()
+        self.render_steps = render_steps
         self.step_counter = 0
         self.render_mode = render_mode
         self.logging = logging
@@ -208,7 +209,8 @@ class ChessEnv(gym.Env):
                 'promoted': self.board.promoted,
                 'chess960': self.board.chess960,
                 'ep_square': self.board.ep_square}    
-        self.render()
+        if self.render_steps:
+            self.render()
         return observation, reward, terminated, truncated, info
 
     #Gymnasium requires handling the 'seed' and 'options' arguments 
