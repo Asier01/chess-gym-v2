@@ -177,6 +177,7 @@ class ChessEnv(gym.Env):
         return mask
     def step(self, action):
 
+        print(action)
         self.step_counter += 1
         
         #if illegal action chosen, end the match as a loss with worse reward
