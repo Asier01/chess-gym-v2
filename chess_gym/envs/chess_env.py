@@ -265,7 +265,12 @@ class ChessEnv(gym.Env):
                         #Use Stockfish engine for intermediate evaluation    
                         case "stockfish":
                             eval_cp = stockfish_evaluation(self.board)
-                            reward = np.clip(eval_cp / 1000.0, -1.0, 1.0)  # normalize centipawns given by the engine
+                            print(eval_cp)
+                            #Sometines stockfish evaluation returns a NoneType
+                            if eval_cp is None:
+                                reward = 0
+                            else
+                                reward = np.clip(eval_cp / 1000.0, -1.0, 1.0)  # normalize centipawns given by the engine
                             print("STOCKFISH REWARD - ",reward)
                         case _:
                             reward = 0
