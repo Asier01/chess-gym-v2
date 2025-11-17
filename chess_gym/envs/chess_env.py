@@ -120,7 +120,7 @@ class ChessEnv(gym.Env):
     """Chess Environment"""
     metadata = {'render_modes': ['rgb_array', 'human', 'training'], 'observation_modes': ['rgb_array', 'piece_map']}
 
-    def __init__(self, render_size=512, render_mode=None, observation_mode='rgb_array', claim_draw=True,  logging = False, render_steps = False, steps_per_render = 50, use_eval = None, **kwargs):
+    def __init__(self, render_size=512, render_mode=None, observation_mode='rgb_array', claim_draw=True,  logging = False, render_steps = False, steps_per_render = 50, reward_type = "sparse" , use_eval = None, **kwargs):
         super(ChessEnv, self).__init__()
         self.render_steps = render_steps
         self.steps_per_render = steps_per_render
@@ -129,6 +129,7 @@ class ChessEnv(gym.Env):
         self.logging = logging
         self.terminated_episodes = 0
         self.use_eval = use_eval
+        self.reward_type = reward_type
         if observation_mode == 'rgb_array':
             self.observation_space = spaces.Box(low = 0, high = 255,
                                                 shape = (render_size, render_size, 3),
@@ -252,15 +253,20 @@ class ChessEnv(gym.Env):
 
                 #reward = (1 if result == '1-0' else -1 if result == '0-1' else 0)
                 if terminated:
-                    reward = (1 if result == '1-0' else -1 if result == '0-1' else 0)
-                    #print("TERMINATED REWARD - ",reward)
+                    
+                    #reward = (1 if result == '1-0' else -1 if result == '0-1' else 0)
+                    #Positive reward if the agents wins, independently of being white or black
+                    reward = (1 if result == '1-0' else 1 if result == '0-1' else 0)
+                    
                 elif truncated:
                     match self.use_eval:
                     
                         #Use material left for intermediate evaluation
                         case "material":
                             reward = material_evaluation(self.board)
-                            #print("MATERIAL REWARD - ",reward)
+                            # If agent moves as black, set opposite reward
+                            if not self.step_counter % 2 == 0:
+                                reward = -reward
                     
                         #Use Stockfish engine for intermediate evaluation    
                         case "stockfish":
@@ -271,11 +277,37 @@ class ChessEnv(gym.Env):
                                 reward = 0
                             else:
                                 reward = np.clip(eval_cp / 1000.0, -1.0, 1.0)  # normalize centipawns given by the engine
-                            #print("STOCKFISH REWARD - ",reward)
+                                # If agent moves as black, set opposite reward
+                                if not self.step_counter % 2 == 0:
+                                    reward = -reward
                         case _:
                             reward = 0
                 else:
-                    reward = 0
+                    if self.reward_type = "dense":
+                        match self.use_eval:
+                            case "material":
+                                reward = material_evaluation(self.board)
+                                # If agent moves as black, set opposite reward
+                                if not self.step_counter % 2 == 0:
+                                    reward = -reward
+                        
+                            #Use Stockfish engine for intermediate evaluation    
+                            case "stockfish":
+                                eval_cp = stockfish_evaluation(self.board)
+                                
+                                #Sometines stockfish evaluation returns a NoneType
+                                if eval_cp is None:
+                                    reward = 0
+                                else:
+                                    reward = np.clip(eval_cp / 1000.0, -1.0, 1.0)  # normalize centipawns given by the engine
+                                    # If agent moves as black, set opposite reward
+                                    if not self.step_counter % 2 == 0:
+                                        reward = -reward
+                            case _:
+                                reward = 0
+                    else:
+                        reward = 0
+                        
             
         observation = self._observe()
         info = {'turn': self.board.turn,
