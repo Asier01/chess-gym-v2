@@ -268,6 +268,7 @@ class ChessEnv(gym.Env):
                     #reward = (1 if result == '1-0' else -1 if result == '0-1' else 0)
                     #Positive reward if the agents wins, independently of being white or black
                     reward = (1 if result == '1-0' else 1 if result == '0-1' else 0)
+                    print("REWARD - TERMINATED - ",reward)
                     
                 elif truncated:
                     match self.use_eval:
@@ -293,6 +294,7 @@ class ChessEnv(gym.Env):
                                     reward = -reward
                         case _:
                             reward = 0
+                    print("REWARD - TRUNCATED - ",reward)
                 else:
                     if self.reward_type == "dense":
                         match self.use_eval:
@@ -318,13 +320,16 @@ class ChessEnv(gym.Env):
                                 reward = 0
                     else:
                         reward = 0
+                    print("REWARD - INTERMEDIATE - ",reward)
 
         if not terminated or truncated:
             #Make the engine play the next move of the opposite color
             self.board.push(stockfish_next_move(self.board))
             terminated = self.board.is_game_over(claim_draw = self.claim_draw)
-       
-        print
+            if terminated:
+                reward = -1
+            print("REWARD - LOSE - ",reward)
+        
         observation = self._observe()
         info = {'turn': self.board.turn,
                 'castling_rights': self.board.castling_rights,
