@@ -6,6 +6,7 @@ import chess.svg
 import chess.engine
 
 import numpy as np
+import random
 
 from io import BytesIO
 import cairosvg
@@ -32,6 +33,13 @@ PIECE_VALUES = {
     chess.QUEEN: 9
 }
 
+#Get the best next move decided by the stockfish engine 
+def stockfish_next_move(board, time_limit = 0.01):
+    engine = chess.engine.SimpleEngine.popen_uci(STOCKFISH_PATH)
+    result = engine.play(board, chess.engine.Limit(time=time_limit))
+    engine.quit()
+    return result.move
+
 #Evaluate current state using the stockfish chess engine
 def stockfish_evaluation(board, time_limit = 0.01):
     engine = chess.engine.SimpleEngine.popen_uci(STOCKFISH_PATH)
@@ -39,14 +47,7 @@ def stockfish_evaluation(board, time_limit = 0.01):
     engine.quit()
     return result['score'].relative.score()
 
-def stockfish_next_move(board, time_limit = 0.01):
-    engine = chess.engine.SimpleEngine.popen_uci(STOCKFISH_PATH)
-    result = engine.play(board, chess.engine.Limit(time=0.1))
-    engine.quit()
-    return result.move
-    
 #Evaluate current state using current available material
-#TODO: be able to use it for black player aswell
 def material_evaluation(board):
     white_score = sum(PIECE_VALUES.get(piece.piece_type, 0) for piece in board.piece_map().values() if piece.color)
     black_score = sum(PIECE_VALUES.get(piece.piece_type, 0) for piece in board.piece_map().values() if not piece.color)
@@ -161,17 +162,12 @@ class ChessEnv(gym.Env):
         self.render_size = render_size
         self.claim_draw = claim_draw
 
+        self.color = None
+
         self.viewer = None
 
         self.action_space = MoveSpace(self.board)
 
-        ###################
-        print(stockfish_next_move(self.board))
-        print(type(stockfish_next_move(self.board)))
-        self.board.push(stockfish_next_move(self.board))
-        self.render()
-
-        ###################
 
     # =====================================================
     # Observation utils
@@ -278,7 +274,7 @@ class ChessEnv(gym.Env):
                         case "material":
                             reward = material_evaluation(self.board)
                             # If agent moves as black, set opposite reward
-                            if not self.step_counter % 2 == 0:
+                            if self.color == "BLACK":
                                 reward = -reward
                     
                         #Use Stockfish engine for intermediate evaluation    
@@ -291,7 +287,7 @@ class ChessEnv(gym.Env):
                             else:
                                 reward = np.clip(eval_cp / 1000.0, -1.0, 1.0)  # normalize centipawns given by the engine
                                 # If agent moves as black, set opposite reward
-                                if not self.step_counter % 2 == 0:
+                                if self.color == "BLACK":
                                     reward = -reward
                         case _:
                             reward = 0
@@ -301,7 +297,7 @@ class ChessEnv(gym.Env):
                             case "material":
                                 reward = material_evaluation(self.board)
                                 # If agent moves as black, set opposite reward
-                                if not self.step_counter % 2 == 0:
+                                if self.color == "BLACK":
                                     reward = -reward
                         
                             #Use Stockfish engine for intermediate evaluation    
@@ -314,13 +310,14 @@ class ChessEnv(gym.Env):
                                 else:
                                     reward = np.clip(eval_cp / 1000.0, -1.0, 1.0)  # normalize centipawns given by the engine
                                     # If agent moves as black, set opposite reward
-                                    if not self.step_counter % 2 == 0:
+                                    if self.color == "BLACK":
                                         reward = -reward
                             case _:
                                 reward = 0
                     else:
                         reward = 0
-                        
+        #Make the engine play the next move of the opposite color
+        self.board.push(stockfish_next_move(self.board))
             
         observation = self._observe()
         info = {'turn': self.board.turn,
@@ -333,6 +330,7 @@ class ChessEnv(gym.Env):
         self.step_counter += 1
         return observation, reward, terminated, truncated, info
 
+    
     #Gymnasium requires handling the 'seed' and 'options' arguments 
     def reset(self, seed=None, options=None):
         super().reset(seed=seed)
@@ -341,9 +339,19 @@ class ChessEnv(gym.Env):
         if self.chess960:
             self.board.set_chess960_pos(np.random.randint(0, 960))
             #self.board.set_chess960_pos(seed)
+        
+        #Chose if agent plays whites or blacks
+        if random.choice([0,1]) ==0:
+            #if blacks, engine makes the first move
+            self.color = "BLACK"
+            self.board.push(stockfish_next_move(self.board))
+        else:
+            self.color = "WHITE"
+        
 
         return self._observe(), {}
-        
+
+    
     # ==========================================
     # Rendering
     # ==========================================
