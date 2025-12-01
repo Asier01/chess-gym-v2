@@ -316,6 +316,8 @@ class ChessEnv(gym.Env):
                             reward = 0
                 else:
                     print("NOR TERMINATED NOR TRUNCATED")
+                    print(terminated)
+                    print(truncated)
                     if self.reward_type == "dense":
                         match self.use_eval:
                             case "material":
