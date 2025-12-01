@@ -327,7 +327,7 @@ class ChessEnv(gym.Env):
                                 reward = 0
                     else:
                         reward = 0
-                    print(self.color," - REWARD - INTERMEDIATE - ",reward)
+                    #print(self.color," - REWARD - INTERMEDIATE - ",reward)
 
         if not terminated or truncated:
             #Make the engine play the next move of the opposite color
@@ -335,7 +335,7 @@ class ChessEnv(gym.Env):
             terminated = self.board.is_game_over(claim_draw = self.claim_draw)
             if terminated:
                 reward = -1
-                print("REWARD - LOSE - ",reward)
+                #print("REWARD - LOSE - ",reward)
         
         observation = self._observe()
         info = {'turn': self.board.turn,
