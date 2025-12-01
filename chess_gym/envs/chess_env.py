@@ -281,17 +281,16 @@ class ChessEnv(gym.Env):
                 # is_game_over() checks for fifty-move rule or threefold repetition if claim_draw = true. Checking threefold repetition may be too slow
                 terminated = self.board.is_game_over(claim_draw = self.claim_draw)
                 truncated = self.step_counter > MAX_MOVES
-                print("TERMINATED BY AGENT")
-                print(terminated)
-                print(result)
+
                 #reward = (1 if result == '1-0' else -1 if result == '0-1' else 0)
                 if terminated:
-                    
+                    print("TERMINATED BY AGENT")
                     #reward = (1 if result == '1-0' else -1 if result == '0-1' else 0)
                     #Positive reward if the agents wins, independently of being white or black
                     reward = (1 if result == '1-0' else 1 if result == '0-1' else 0)
                     
                 elif truncated:
+                    print("TRUNCATED BY AGENT")
                     match self.use_eval:
                     
                         #Use material left for intermediate evaluation
@@ -316,6 +315,7 @@ class ChessEnv(gym.Env):
                         case _:
                             reward = 0
                 else:
+                    print("NOR TERMINATED NOR TRUNCATED")
                     if self.reward_type == "dense":
                         match self.use_eval:
                             case "material":
