@@ -243,6 +243,14 @@ class ChessEnv(gym.Env):
         if self.step_counter % self.steps_per_render == 0 and self.render_steps:
             self.render()
 
+        if not self.step_counter == 0:
+            #Make the engine play the next move of the opposite color
+            self.board.push(stockfish_next_move(self.board))
+
+        # Optional render every few steps, second move render
+        if self.step_counter % self.steps_per_render == 0 and self.render_steps:
+            self.render()
+
         #if illegal action chosen, end the match as a loss with worse reward
         if action not in self._get_legal_moves_index():     
                 #reward = ((-1)/self.step_counter) - 1
@@ -316,8 +324,7 @@ class ChessEnv(gym.Env):
                                 reward = 0
                     else:
                         reward = 0
-        #Make the engine play the next move of the opposite color
-        self.board.push(stockfish_next_move(self.board))
+        
             
         observation = self._observe()
         info = {'turn': self.board.turn,
