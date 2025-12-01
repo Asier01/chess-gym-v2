@@ -293,7 +293,7 @@ class ChessEnv(gym.Env):
                         case _:
                             reward = 0
                 else:
-                    if self.reward_type = "dense":
+                    if self.reward_type == "dense":
                         match self.use_eval:
                             case "material":
                                 reward = material_evaluation(self.board)
