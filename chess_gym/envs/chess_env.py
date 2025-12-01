@@ -137,6 +137,7 @@ class ChessEnv(gym.Env):
         self.terminated_episodes = 0
         self.use_eval = use_eval
         self.reward_type = reward_type
+        self.last_reward = 0
         if observation_mode == 'rgb_array':
             self.observation_space = spaces.Box(low = 0, high = 255,
                                                 shape = (render_size, render_size, 3),
@@ -284,9 +285,9 @@ class ChessEnv(gym.Env):
                         case "stockfish":
                             eval_cp = stockfish_evaluation(self.board)
                             
-                            #Sometines stockfish evaluation returns a NoneType
+                            #Stockfish evaluation returns a NoneType if it sees a mate
                             if eval_cp is None:
-                                reward = 0
+                                reward = -1
                             else:
                                 reward = np.clip(eval_cp / 1000.0, -0.9, 0.9)  # normalize centipawns given by the engine
                                 '''
@@ -312,9 +313,9 @@ class ChessEnv(gym.Env):
                             case "stockfish":
                                 eval_cp = stockfish_evaluation(self.board)
                                 
-                                #Sometines stockfish evaluation returns a NoneType
+                                #Stockfish evaluation returns a NoneType if it sees a mate
                                 if eval_cp is None:
-                                    reward = -0.9
+                                    reward = -1
                                 else:
                                     reward = np.clip(eval_cp / 1000.0, -0.9, 0.9)  # normalize centipawns given by the engine
                                     '''
@@ -346,6 +347,11 @@ class ChessEnv(gym.Env):
                 'chess960': self.board.chess960,
                 'ep_square': self.board.ep_square}    
         self.step_counter += 1
+
+        #Set rewards as the difference of evaluation
+        if not terminated:
+            reward = reward - self.last_reward
+        
         return observation, reward, terminated, truncated, info
 
     
@@ -367,7 +373,9 @@ class ChessEnv(gym.Env):
         else:
             self.color = "WHITE"
         #print("RESET - PLAYING AS - ",self.color)
-
+        
+        self.last_reward = 0
+        
         return self._observe(), {}
 
     
