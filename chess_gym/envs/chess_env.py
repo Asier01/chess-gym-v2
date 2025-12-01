@@ -247,6 +247,7 @@ class ChessEnv(gym.Env):
         if not self.step_counter == 0:
             self.board.push(stockfish_next_move(self.board))
             terminated = self.board.is_game_over(claim_draw = self.claim_draw)
+            print("PLAYED BY ENGINE")
             if terminated:
                 reward = -1
                 observation = self._observe()
