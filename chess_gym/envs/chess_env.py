@@ -316,8 +316,8 @@ class ChessEnv(gym.Env):
                                 if eval_cp is None:
                                     reward = -0.9
                                 else:
-                                    '''
                                     reward = np.clip(eval_cp / 1000.0, -0.9, 0.9)  # normalize centipawns given by the engine
+                                    '''
                                     # If agent moves as black, set opposite reward
                                     if self.color == "BLACK":
                                         reward = -reward
