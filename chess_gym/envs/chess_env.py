@@ -354,7 +354,7 @@ class ChessEnv(gym.Env):
             self.board.push(stockfish_next_move(self.board))
         else:
             self.color = "WHITE"
-        print("RESET - PLAYING AS - ",self.color)
+        #print("RESET - PLAYING AS - ",self.color)
 
         return self._observe(), {}
 
