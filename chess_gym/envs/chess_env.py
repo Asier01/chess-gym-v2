@@ -155,8 +155,8 @@ class ChessEnv(gym.Env):
         self.board = chess.Board(chess960 = self.chess960)
         ###################
         print(stockfish_next_move(self.board))
-        print(stockfish_next_move(self.board))
-        print(stockfish_next_move(self.board))
+        print(type(stockfish_next_move(self.board)))
+
         ###################
         
         if self.chess960:
