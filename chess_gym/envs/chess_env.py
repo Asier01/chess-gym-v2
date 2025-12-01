@@ -153,13 +153,7 @@ class ChessEnv(gym.Env):
         # chess960 defines Fischer Random Chess, a chess variant that randomizes the starting position of the pieces on the back rank
         self.chess960 = kwargs['chess960']
         self.board = chess.Board(chess960 = self.chess960)
-        ###################
-        print(stockfish_next_move(self.board))
-        print(type(stockfish_next_move(self.board)))
-        self.board.push(stockfish_next_move(self.board))
-        self.render()
-
-        ###################
+       
         
         if self.chess960:
             self.board.set_chess960_pos(np.random.randint(0, 960))
@@ -171,6 +165,13 @@ class ChessEnv(gym.Env):
 
         self.action_space = MoveSpace(self.board)
 
+        ###################
+        print(stockfish_next_move(self.board))
+        print(type(stockfish_next_move(self.board)))
+        self.board.push(stockfish_next_move(self.board))
+        self.render()
+
+        ###################
 
     # =====================================================
     # Observation utils
