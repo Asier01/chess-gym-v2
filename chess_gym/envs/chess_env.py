@@ -281,8 +281,7 @@ class ChessEnv(gym.Env):
                 # is_game_over() checks for fifty-move rule or threefold repetition if claim_draw = true. Checking threefold repetition may be too slow
                 terminated = self.board.is_game_over(claim_draw = self.claim_draw)
                 truncated = self.step_counter > MAX_MOVES
-                #TODO: calculate reward if truncated or terminated with self.use_eval
-
+                print("TERMINATED BY AGENT")
                 #reward = (1 if result == '1-0' else -1 if result == '0-1' else 0)
                 if terminated:
                     
