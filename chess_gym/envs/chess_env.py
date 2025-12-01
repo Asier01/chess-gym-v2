@@ -288,10 +288,13 @@ class ChessEnv(gym.Env):
                             if eval_cp is None:
                                 reward = 0
                             else:
-                                reward = np.clip(eval_cp / 1000.0, -1.0, 1.0)  # normalize centipawns given by the engine
+                                reward = np.clip(eval_cp / 1000.0, -0.9, 0.9)  # normalize centipawns given by the engine
+                                '''
                                 # If agent moves as black, set opposite reward
                                 if self.color == "BLACK":
                                     reward = -reward
+                                '''
+                                reward = -reward
                         case _:
                             reward = 0
                     print("REWARD - TRUNCATED - ",reward)
@@ -300,22 +303,26 @@ class ChessEnv(gym.Env):
                         match self.use_eval:
                             case "material":
                                 reward = material_evaluation(self.board)
+
                                 # If agent moves as black, set opposite reward
                                 if self.color == "BLACK":
                                     reward = -reward
-                        
+
                             #Use Stockfish engine for intermediate evaluation    
                             case "stockfish":
                                 eval_cp = stockfish_evaluation(self.board)
                                 
                                 #Sometines stockfish evaluation returns a NoneType
                                 if eval_cp is None:
-                                    reward = 0
+                                    reward = -0.9
                                 else:
-                                    reward = np.clip(eval_cp / 1000.0, -1.0, 1.0)  # normalize centipawns given by the engine
+                                    '''
+                                    reward = np.clip(eval_cp / 1000.0, -0.9, 0.9)  # normalize centipawns given by the engine
                                     # If agent moves as black, set opposite reward
                                     if self.color == "BLACK":
                                         reward = -reward
+                                    '''
+                                    reward = -reward
                             case _:
                                 reward = 0
                     else:
