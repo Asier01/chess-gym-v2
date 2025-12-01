@@ -242,10 +242,24 @@ class ChessEnv(gym.Env):
         # Optional render every few steps
         if self.step_counter % self.steps_per_render == 0 and self.render_steps:
             self.render()
-
+        
+        #Make the engine play the next move of the opposite color
         if not self.step_counter == 0:
-            #Make the engine play the next move of the opposite color
             self.board.push(stockfish_next_move(self.board))
+            terminated = self.board.is_game_over(claim_draw = self.claim_draw)
+            if terminated:
+                reward = -1
+                observation = self._observe()
+                truncated = False
+                info = {'turn': self.board.turn,
+                        'castling_rights': self.board.castling_rights,
+                        'fullmove_number': self.board.fullmove_number,
+                        'halfmove_clock': self.board.halfmove_clock,
+                        'promoted': self.board.promoted,
+                        'chess960': self.board.chess960,
+                        'ep_square': self.board.ep_square} 
+                return observation, reward, terminated, truncated, info
+                
 
         # Optional render every few steps, second move render
         if self.step_counter % self.steps_per_render == 0 and self.render_steps:
@@ -257,7 +271,7 @@ class ChessEnv(gym.Env):
                 reward = -1
                 terminated = True
                 truncated = False
-            
+                
         else:
                 
                 self.board.push(self._action_to_move(action))
