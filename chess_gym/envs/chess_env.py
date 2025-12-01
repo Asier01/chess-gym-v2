@@ -320,7 +320,7 @@ class ChessEnv(gym.Env):
                                 reward = 0
                     else:
                         reward = 0
-                    print("REWARD - INTERMEDIATE - ",reward)
+                    print(self.color," - REWARD - INTERMEDIATE - ",reward)
 
         if not terminated or truncated:
             #Make the engine play the next move of the opposite color
