@@ -38,6 +38,12 @@ def stockfish_evaluation(board, time_limit = 0.01):
     result = engine.analyse(board, chess.engine.Limit(time=time_limit))
     engine.quit()
     return result['score'].relative.score()
+
+def stockfish_next_move(board, time_limit = 0.01):
+    engine = chess.engine.SimpleEngine.popen_uci(STOCKFISH_PATH)
+    result = engine.play(board, chess.engine.Limit(time=0.1))
+    engine.quit()
+    return result
     
 #Evaluate current state using current available material
 #TODO: be able to use it for black player aswell
@@ -147,7 +153,11 @@ class ChessEnv(gym.Env):
         # chess960 defines Fischer Random Chess, a chess variant that randomizes the starting position of the pieces on the back rank
         self.chess960 = kwargs['chess960']
         self.board = chess.Board(chess960 = self.chess960)
-        #print(stockfish_evaluation(self.board))
+        ###################
+        print(stockfish_next_move(self.board))
+        print(stockfish_next_move(self.board))
+        print(stockfish_next_move(self.board))
+        ###################
         
         if self.chess960:
             self.board.set_chess960_pos(np.random.randint(0, 960))
