@@ -354,7 +354,7 @@ class ChessEnv(gym.Env):
     
     #Gymnasium requires handling the 'seed' and 'options' arguments 
     def reset(self, seed=None, options=None):
-        print("RESET")
+        
         super().reset(seed=seed)
         self.board.reset()
         self.step_counter = 0
@@ -369,7 +369,7 @@ class ChessEnv(gym.Env):
             self.board.push(stockfish_next_move(self.board))
         else:
             self.color = "WHITE"
-        
+        print("RESET - PLAYING AS - ",self.color)
 
         return self._observe(), {}
 
