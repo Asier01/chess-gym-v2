@@ -156,6 +156,8 @@ class ChessEnv(gym.Env):
         ###################
         print(stockfish_next_move(self.board))
         print(type(stockfish_next_move(self.board)))
+        self.board.push(stockfish_next_move(self.board))
+        self.render()
 
         ###################
         
