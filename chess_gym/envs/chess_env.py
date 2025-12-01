@@ -258,6 +258,7 @@ class ChessEnv(gym.Env):
                         'promoted': self.board.promoted,
                         'chess960': self.board.chess960,
                         'ep_square': self.board.ep_square} 
+                print("TERMINATED BY ENGINE")
                 return observation, reward, terminated, truncated, info
                 
 
