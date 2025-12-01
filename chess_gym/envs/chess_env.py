@@ -247,6 +247,7 @@ class ChessEnv(gym.Env):
         if not self.step_counter == 0:
             self.board.push(stockfish_next_move(self.board))
             terminated = self.board.is_game_over(claim_draw = self.claim_draw)
+            print(terminated)
             print("PLAYED BY ENGINE")
             if terminated:
                 reward = -1
@@ -268,7 +269,8 @@ class ChessEnv(gym.Env):
             self.render()
 
         #if illegal action chosen, end the match as a loss with worse reward
-        if action not in self._get_legal_moves_index():     
+        if action not in self._get_legal_moves_index():  
+                print("ILLEGAL ACTION")
                 #reward = ((-1)/self.step_counter) - 1
                 reward = -1
                 terminated = True
