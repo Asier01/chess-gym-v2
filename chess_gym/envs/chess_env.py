@@ -43,7 +43,7 @@ def stockfish_next_move(board, time_limit = 0.01):
     engine = chess.engine.SimpleEngine.popen_uci(STOCKFISH_PATH)
     result = engine.play(board, chess.engine.Limit(time=0.1))
     engine.quit()
-    return result
+    return result.move
     
 #Evaluate current state using current available material
 #TODO: be able to use it for black player aswell
