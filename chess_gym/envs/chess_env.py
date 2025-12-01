@@ -276,6 +276,7 @@ class ChessEnv(gym.Env):
         else:
                 
                 self.board.push(self._action_to_move(action))
+                print("AGENT CHOSEN ACTION - ",self._action_to_move(action))
                 result = self.board.result()
                 
                 # is_game_over() checks for fifty-move rule or threefold repetition if claim_draw = true. Checking threefold repetition may be too slow
