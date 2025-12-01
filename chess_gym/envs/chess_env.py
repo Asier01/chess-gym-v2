@@ -282,6 +282,8 @@ class ChessEnv(gym.Env):
                 terminated = self.board.is_game_over(claim_draw = self.claim_draw)
                 truncated = self.step_counter > MAX_MOVES
                 print("TERMINATED BY AGENT")
+                print(terminated)
+                print(result)
                 #reward = (1 if result == '1-0' else -1 if result == '0-1' else 0)
                 if terminated:
                     
