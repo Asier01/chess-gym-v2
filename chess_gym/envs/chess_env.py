@@ -316,8 +316,6 @@ class ChessEnv(gym.Env):
                             reward = 0
                 else:
                     print("NOR TERMINATED NOR TRUNCATED")
-                    print(terminated)
-                    print(truncated)
                     if self.reward_type == "dense":
                         match self.use_eval:
                             case "material":
@@ -343,7 +341,8 @@ class ChessEnv(gym.Env):
                     else:
                         reward = 0
         
-            
+        terminated = self.board.is_game_over(claim_draw = self.claim_draw)
+        truncated = self.step_counter > MAX_MOVES
         observation = self._observe()
         info = {'turn': self.board.turn,
                 'castling_rights': self.board.castling_rights,
