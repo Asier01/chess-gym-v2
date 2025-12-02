@@ -242,13 +242,6 @@ class ChessEnv(gym.Env):
     # =====================================================
     
     def step(self, action):
-        # Optional render every few steps
-        if self.step_counter % self.steps_per_render == 0 and self.render_steps:
-            self.render()
-            
-        # Optional render every few steps, second move render
-        if self.step_counter % self.steps_per_render == 0 and self.render_steps:
-            self.render()
 
         #if illegal action chosen, end the match as a loss with worse reward
         if action not in self._get_legal_moves_index():  
@@ -332,6 +325,10 @@ class ChessEnv(gym.Env):
                         reward = 0
                     #print(self.color," - REWARD - INTERMEDIATE - ",reward)
 
+        # Optional render every few steps, second move render
+        if self.step_counter % self.steps_per_render == 0 and self.render_steps:
+            self.render()
+        
         if not terminated or truncated:
             #Make the engine play the next move of the opposite color
             match self.rival_agent:
@@ -360,6 +357,10 @@ class ChessEnv(gym.Env):
         #Set rewards as the difference of evaluation
         if not terminated:
             reward = reward - self.last_reward
+
+        # Optional render every few steps
+        if self.step_counter % self.steps_per_render == 0 and self.render_steps:
+            self.render()
         
         return observation, reward, terminated, truncated, info
 
@@ -391,6 +392,9 @@ class ChessEnv(gym.Env):
         #print("RESET - PLAYING AS - ",self.color)
         
         self.last_reward = 0
+
+        if self.step_counter % self.steps_per_render == 0 and self.render_steps:
+            self.render()
         
         return self._observe(), {}
 
