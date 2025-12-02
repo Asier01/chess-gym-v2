@@ -335,11 +335,11 @@ class ChessEnv(gym.Env):
         if not terminated or truncated:
             #Make the engine play the next move of the opposite color
             match self.rival_agent:
-                case: "engine":
+                case "engine":
                     self.board.push(stockfish_next_move(self.board))
-                case: "random":
+                case "random":
                     self.board.push(np.random.choice(list(self.board.legal_moves)))
-                case: "human":
+                case "human":
                     self.board.push(chess.Move(input()))
             terminated = self.board.is_game_over(claim_draw = self.claim_draw)
             if terminated:
@@ -378,11 +378,11 @@ class ChessEnv(gym.Env):
             #if blacks, engine makes the first move
             self.color = "BLACK"
             match self.rival_agent:
-                case: "engine":
+                case "engine":
                     self.board.push(stockfish_next_move(self.board))
-                case: "random":
+                case "random":
                     self.board.push(np.random.choice(list(self.board.legal_moves)))
-                case: "human":
+                case "human":
                     self.board.push(chess.Move(input()))
         else:
             self.color = "WHITE"
