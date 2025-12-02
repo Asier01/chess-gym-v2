@@ -355,8 +355,8 @@ class ChessEnv(gym.Env):
         self.step_counter += 1
 
         
-        #Set rewards as the difference of evaluation so it telescopes, avoiding accomulation
-        if not terminated:
+        #Set rewards as the difference of evaluation so it telescopes, avoiding accomulation in dense rewards
+        if not terminated and self.reward_type=="dense":
             reward = reward - self.last_reward
             self.last_reward = reward
 
