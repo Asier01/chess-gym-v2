@@ -358,8 +358,8 @@ class ChessEnv(gym.Env):
         #Set rewards as the difference of evaluation so it telescopes, avoiding accomulation in dense rewards
         if not terminated and self.reward_type=="dense":
                 reward_delta = (reward - self.last_reward)
-                self.last_reward = reward * 0.1
-                reward = reward_delta
+                self.last_reward = reward 
+                reward = reward_delta * 0.1
             
 
         # Optional render every few steps
