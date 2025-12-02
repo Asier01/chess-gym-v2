@@ -385,7 +385,7 @@ class ChessEnv(gym.Env):
                 case "random":
                     self.board.push(np.random.choice(list(self.board.legal_moves)))
                 case "human":
-                    print("Write your next move")
+                    print("Playing as ",self.color," Write your next move")
                     self.board.push(chess.Move.from_uci(input()))
         else:
             self.color = "WHITE"
