@@ -354,6 +354,7 @@ class ChessEnv(gym.Env):
                 'ep_square': self.board.ep_square}    
         self.step_counter += 1
 
+        '''
         #Set rewards as the difference of evaluation
         if not terminated:
             reward = reward - self.last_reward
@@ -361,6 +362,7 @@ class ChessEnv(gym.Env):
         # Optional render every few steps
         if self.step_counter % self.steps_per_render == 0 and self.render_steps:
             self.render()
+        '''
         
         return observation, reward, terminated, truncated, info
 
