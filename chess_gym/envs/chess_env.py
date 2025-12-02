@@ -377,6 +377,8 @@ class ChessEnv(gym.Env):
         
         #Chose if agent plays whites or blacks
         if random.choice([0,1]) ==0:
+            if self.step_counter % self.steps_per_render == 0 and self.render_steps:
+            self.render()
             #if blacks, engine makes the first move
             self.color = "BLACK"
             match self.rival_agent:
@@ -385,7 +387,7 @@ class ChessEnv(gym.Env):
                 case "random":
                     self.board.push(np.random.choice(list(self.board.legal_moves)))
                 case "human":
-                    print("Playing as ",self.color," Write your next move")
+                    print("Playing as not",self.color," Write your next move")
                     self.board.push(chess.Move.from_uci(input()))
         else:
             self.color = "WHITE"
@@ -393,8 +395,6 @@ class ChessEnv(gym.Env):
         
         self.last_reward = 0
 
-        if self.step_counter % self.steps_per_render == 0 and self.render_steps:
-            self.render()
         
         return self._observe(), {}
 
@@ -410,6 +410,7 @@ class ChessEnv(gym.Env):
         elif self.render_mode == 'rgb_array':
             return img
         elif self.render_mode == 'human':
+            plt.clf()
             plt.imshow(img)
             plt.show(block=False)
             plt.pause(0.001)
