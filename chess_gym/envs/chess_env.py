@@ -127,7 +127,7 @@ class ChessEnv(gym.Env):
     """Chess Environment"""
     metadata = {'render_modes': ['rgb_array', 'human', 'training'], 'observation_modes': ['rgb_array', 'piece_map']}
 
-    def __init__(self, render_size=512, render_mode=None, observation_mode='rgb_array', claim_draw=True,  logging = False, render_steps = False, steps_per_render = 50, reward_type = "sparse" , use_eval = None, **kwargs):
+    def __init__(self, render_size=512, render_mode=None, observation_mode='rgb_array', claim_draw=True,  logging = False, render_steps = False, steps_per_render = 50, reward_type = "sparse" , use_eval = None, rival_agent = "engine", **kwargs):
         super(ChessEnv, self).__init__()
         self.render_steps = render_steps
         self.steps_per_render = steps_per_render
@@ -138,6 +138,7 @@ class ChessEnv(gym.Env):
         self.use_eval = use_eval
         self.reward_type = reward_type
         self.last_reward = 0
+        self.rival_agent = rival_agent
         if observation_mode == 'rgb_array':
             self.observation_space = spaces.Box(low = 0, high = 255,
                                                 shape = (render_size, render_size, 3),
@@ -333,7 +334,13 @@ class ChessEnv(gym.Env):
 
         if not terminated or truncated:
             #Make the engine play the next move of the opposite color
-            self.board.push(stockfish_next_move(self.board))
+            match self.rival_agent:
+                case: "engine":
+                    self.board.push(stockfish_next_move(self.board))
+                case: "random":
+                    self.board.push(np.random.choice(list(self.board.legal_moves)))
+                case: "human":
+                    self.board.push(chess.Move(input()))
             terminated = self.board.is_game_over(claim_draw = self.claim_draw)
             if terminated:
                 reward = -1
@@ -370,7 +377,13 @@ class ChessEnv(gym.Env):
         if random.choice([0,1]) ==0:
             #if blacks, engine makes the first move
             self.color = "BLACK"
-            self.board.push(stockfish_next_move(self.board))
+            match self.rival_agent:
+                case: "engine":
+                    self.board.push(stockfish_next_move(self.board))
+                case: "random":
+                    self.board.push(np.random.choice(list(self.board.legal_moves)))
+                case: "human":
+                    self.board.push(chess.Move(input()))
         else:
             self.color = "WHITE"
         #print("RESET - PLAYING AS - ",self.color)
