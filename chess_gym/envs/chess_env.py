@@ -340,7 +340,8 @@ class ChessEnv(gym.Env):
                 case "random":
                     self.board.push(np.random.choice(list(self.board.legal_moves)))
                 case "human":
-                    self.board.push(chess.Move(input()))
+                    print("Write your next move")
+                    self.board.push(chess.Move.from_uci(input()))
             terminated = self.board.is_game_over(claim_draw = self.claim_draw)
             if terminated:
                 reward = -1
@@ -383,7 +384,8 @@ class ChessEnv(gym.Env):
                 case "random":
                     self.board.push(np.random.choice(list(self.board.legal_moves)))
                 case "human":
-                    self.board.push(chess.Move(input()))
+                    print("Write your next move")
+                    self.board.push(chess.Move.from_uci(input()))
         else:
             self.color = "WHITE"
         #print("RESET - PLAYING AS - ",self.color)
