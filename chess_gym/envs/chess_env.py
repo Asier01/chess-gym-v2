@@ -141,7 +141,8 @@ class ChessEnv(gym.Env):
         if observation_mode == 'rgb_array':
             self.observation_space = spaces.Box(low = 0, high = 255,
                                                 shape = (render_size, render_size, 3),
-                                                dtype = np.uint8)
+                                                #dtype = np.uint8)
+                                                dtype = np.float64)
         elif observation_mode == 'piece_map':
             self.observation_space = spaces.flatten_space(spaces.Box(low = -6, high = 6,
                                                 shape = (8, 8),
