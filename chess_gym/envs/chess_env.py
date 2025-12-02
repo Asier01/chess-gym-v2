@@ -359,7 +359,7 @@ class ChessEnv(gym.Env):
         if not terminated and self.reward_type=="dense":
                 reward_delta = reward - self.last_reward
                 self.last_reward = reward
-                reward = reward_delta
+                reward = np.clip(reward_delta,-1,1)
             
 
         # Optional render every few steps
