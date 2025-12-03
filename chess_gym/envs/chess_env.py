@@ -249,6 +249,7 @@ class ChessEnv(gym.Env):
                 reward = -1
                 terminated = True
                 truncated = False
+                print("ILLEGAL MOVE")
                 
         else:
                 
