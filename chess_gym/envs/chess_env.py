@@ -22,7 +22,7 @@ import matplotlib.pyplot as plt
 
 STOCKFISH_PATH = "/usr/stockfish/stockfish-ubuntu-x86-64-avx2"
 
-MAX_MOVES = 150
+MAX_MOVES = 75
 
 # For material evaluation
 PIECE_VALUES = {
@@ -34,7 +34,7 @@ PIECE_VALUES = {
 }
 
 #Get the best next move decided by the stockfish engine 
-def stockfish_next_move(board, time_limit = 0.01):
+def stockfish_next_move(board, time_limit = 0.001):
     engine = chess.engine.SimpleEngine.popen_uci(STOCKFISH_PATH)
     result = engine.play(board, chess.engine.Limit(time=time_limit))
     engine.quit()
