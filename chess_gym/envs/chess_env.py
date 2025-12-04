@@ -11,6 +11,7 @@ import random
 from io import BytesIO
 import cairosvg
 from PIL import Image
+import csv
 
 from IPython.display import clear_output
 import matplotlib.pyplot as plt
@@ -140,6 +141,7 @@ class ChessEnv(gym.Env):
         self.last_reward = 0
         self.rival_agent = rival_agent
         self.engine_time_limit = engine_time_limit
+        self.log_info = [["REWARD","STEPS"]]
         if observation_mode == 'rgb_array':
             self.observation_space = spaces.Box(low = 0, high = 255,
                                                 shape = (render_size, render_size, 3),
@@ -194,6 +196,13 @@ class ChessEnv(gym.Env):
     def _observe(self):
         observation = (self._get_image() if self.observation_mode == 'rgb_array' else self._get_piece_configuration())
         return observation
+
+    def write_log(self):
+        with open('data.csv', 'a', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerows(self.log_info)
+            
+        
 
 
     # =====================================================
@@ -276,6 +285,10 @@ class ChessEnv(gym.Env):
                 terminated = True
                 truncated = False
                 self.step_counter += 1
+
+                self.log_info.append([reward,self.step_counter])
+                self.write_log()
+                
                 print("ILLEGAL MOVE")
                 return self._observe(), reward, terminated, truncated, {}
                 
@@ -298,6 +311,10 @@ class ChessEnv(gym.Env):
                 reward = -reward
             print("REWARD - TERMINATED - ",reward)
             self.step_counter += 1
+            
+            self.log_info.append([reward,self.step_counter])
+            self.write_log()
+            
             return self._observe(), reward, terminated, truncated, {}
     
                         
@@ -306,6 +323,10 @@ class ChessEnv(gym.Env):
         if truncated:
             reward = self.evaluate_position()
             self.step_counter += 1
+            
+            self.log_info.append([reward,self.step_counter])
+            self.write_log()
+            
             return self._observe(), reward, terminated, truncated, {}
 
         # BOARD RENDERING
@@ -330,6 +351,8 @@ class ChessEnv(gym.Env):
             reward = (1 if result == '1-0' else -1 if result == '0-1' else 0)
             if self.color == "BLACK":
                 reward = -reward
+            self.log_info.append([reward,self.step_counter])
+            self.write_log()
             return self._observe(), reward, terminated, truncated, {}
             
         if self.reward_type=="dense":
