@@ -302,7 +302,7 @@ class ChessEnv(gym.Env):
                         
         # INTERMEDIATE REWARDS
         if self.reward_type == "dense" or truncated:
-            reward = self.evaluate_postion():
+            reward = self.evaluate_postion()
             
             if truncated:
                 return self._observe(), reward, terminated, truncated, {}
