@@ -127,7 +127,7 @@ class ChessEnv(gym.Env):
     """Chess Environment"""
     metadata = {'render_modes': ['rgb_array', 'human', 'training'], 'observation_modes': ['rgb_array', 'piece_map']}
 
-    def __init__(self, render_size=512, render_mode=None, observation_mode='rgb_array', claim_draw=True,  logging = False, render_steps = False, steps_per_render = 50, reward_type = "sparse" , use_eval = None, rival_agent = "engine", engine_time_limit=0.01 **kwargs):
+    def __init__(self, render_size=512, render_mode=None, observation_mode='rgb_array', claim_draw=True,  logging = False, render_steps = False, steps_per_render = 50, reward_type = "sparse" , use_eval = None, rival_agent = "engine", engine_time_limit=0.01, **kwargs):
         super(ChessEnv, self).__init__()
         self.render_steps = render_steps
         self.steps_per_render = steps_per_render
