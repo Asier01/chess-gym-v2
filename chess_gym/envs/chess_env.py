@@ -251,7 +251,11 @@ class ChessEnv(gym.Env):
                     eval_cp = stockfish_evaluation(self.board)
                     #Stockfish evaluation returns a NoneType if it sees a mate
                     if eval_cp is None:
-                        reward = -1
+                        # See which player is mating
+                        if score_obj.white().mate() != 0:
+                            reward = 1
+                        else:
+                            reward = -1
                     else:
                         reward = np.clip(eval_cp / 1000.0, -0.9, 0.9)  # normalize centipawns given by the engine
                 case _:
