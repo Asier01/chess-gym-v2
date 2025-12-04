@@ -333,7 +333,9 @@ class ChessEnv(gym.Env):
             return self._observe(), reward, terminated, truncated, {}
             
         if self.reward_type=="dense":
-            reward = self.evaluate_position()
+            current_eval = self.evaluate_position()
+            reward = current_eval - self.last_reward
+            self.last_reward = current_eval
         #if reward is sparse
         else:
             reward= 0
@@ -346,14 +348,7 @@ class ChessEnv(gym.Env):
                 'promoted': self.board.promoted,
                 'chess960': self.board.chess960,
                 'ep_square': self.board.ep_square}    
-
-        '''
-        #Set rewards as the difference of evaluation so it telescopes, avoiding accomulation in dense rewards
-        if not terminated and self.reward_type=="dense":
-                reward_delta = (reward - self.last_reward)
-                self.last_reward = reward 
-                reward = reward_delta #* 0.05
-        '''     
+   
 
         # BOARD RENDERING
         if self.step_counter % self.steps_per_render == 0 and self.render_steps:
