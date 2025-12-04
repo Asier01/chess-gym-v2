@@ -34,7 +34,7 @@ PIECE_VALUES = {
 }
 
 #Get the best next move decided by the stockfish engine 
-def stockfish_next_move(board, time_limit = 0.001):
+def stockfish_next_move(board, time_limit = 0.0001):
     engine = chess.engine.SimpleEngine.popen_uci(STOCKFISH_PATH)
     result = engine.play(board, chess.engine.Limit(time=time_limit))
     engine.quit()
