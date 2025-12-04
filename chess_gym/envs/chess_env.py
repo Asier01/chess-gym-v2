@@ -127,7 +127,7 @@ class ChessEnv(gym.Env):
     """Chess Environment"""
     metadata = {'render_modes': ['rgb_array', 'human', 'training'], 'observation_modes': ['rgb_array', 'piece_map']}
 
-    def __init__(self, render_size=512, render_mode=None, observation_mode='rgb_array', claim_draw=True,  logging = False, render_steps = False, steps_per_render = 50, reward_type = "sparse" , use_eval = None, rival_agent = "engine", **kwargs):
+    def __init__(self, render_size=512, render_mode=None, observation_mode='rgb_array', claim_draw=True,  logging = False, render_steps = False, steps_per_render = 50, reward_type = "sparse" , use_eval = None, rival_agent = "engine", engine_time_limit=0.01 **kwargs):
         super(ChessEnv, self).__init__()
         self.render_steps = render_steps
         self.steps_per_render = steps_per_render
@@ -139,6 +139,7 @@ class ChessEnv(gym.Env):
         self.reward_type = reward_type
         self.last_reward = 0
         self.rival_agent = rival_agent
+        self.engine_time_limit = engine_time_limit
         if observation_mode == 'rgb_array':
             self.observation_space = spaces.Box(low = 0, high = 255,
                                                 shape = (render_size, render_size, 3),
@@ -334,7 +335,7 @@ class ChessEnv(gym.Env):
             #Make the engine play the next move of the opposite color
             match self.rival_agent:
                 case "engine":
-                    self.board.push(stockfish_next_move(self.board))
+                    self.board.push(stockfish_next_move(self.board, self.engine_time_limit))
                 case "random":
                     self.board.push(np.random.choice(list(self.board.legal_moves)))
                 case "human":
@@ -389,7 +390,7 @@ class ChessEnv(gym.Env):
                 self.color = "BLACK"
                 match self.rival_agent:
                     case "engine":
-                        self.board.push(stockfish_next_move(self.board))
+                        self.board.push(stockfish_next_move(self.board, self.engine_time_limit))
                     case "random":
                         self.board.push(np.random.choice(list(self.board.legal_moves)))
                     case "human":
