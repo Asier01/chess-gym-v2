@@ -238,7 +238,7 @@ class ChessEnv(gym.Env):
         mask = np.array([move in legal_actions for move in all_actions], dtype=bool)
         return mask
 
-    def evaluate_postion(self):
+    def evaluate_position(self):
         match self.use_eval:
                 #Use material left for intermediate evaluation
                 case "material":
@@ -275,6 +275,7 @@ class ChessEnv(gym.Env):
                 reward = -1
                 terminated = True
                 truncated = False
+                self.step_counter += 1
                 print("ILLEGAL MOVE")
                 return self._observe(), reward, terminated, truncated, {}
                 
@@ -291,20 +292,21 @@ class ChessEnv(gym.Env):
     
         # TERMINAL EVALUATION
         if terminated:
-            #Positive reward if the agents wins, independently of being white or black
-            #reward = (1 if result == '1-0' else 1 if result == '0-1' else 0)
+            #Positive reward if the agents wins
             reward = (1 if result == '1-0' else -1 if result == '0-1' else 0)
+            if self.color == "BLACK":
+                reward = -reward
             print("REWARD - TERMINATED - ",reward)
             self.step_counter += 1
             return self._observe(), reward, terminated, truncated, {}
     
                         
         # INTERMEDIATE REWARDS
-        if self.reward_type == "dense" or truncated:
-            reward = self.evaluate_postion()
-            
-            if truncated:
-                return self._observe(), reward, terminated, truncated, {}
+        #if self.reward_type == "dense" or truncated:
+        if truncated:
+            reward = self.evaluate_position()
+            self.step_counter += 1
+            return self._observe(), reward, terminated, truncated, {}
 
         # BOARD RENDERING
         if self.step_counter % self.steps_per_render == 0 and self.render_steps:
@@ -324,8 +326,17 @@ class ChessEnv(gym.Env):
         
         #TERMINAL STATE AFTER OPPONENT MOVE
         if terminated:
-            reward = -1
+            result = self.board.result()
+            reward = (1 if result == '1-0' else -1 if result == '0-1' else 0)
+            if self.color == "BLACK":
+                reward = -reward
             return self._observe(), reward, terminated, truncated, {}
+            
+        if self.reward_type=="dense":
+            reward = self.evaluate_position()
+        #if reward is sparse
+        else:
+            reward= 0
             
         
         info = {'turn': self.board.turn,
