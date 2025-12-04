@@ -45,7 +45,9 @@ def stockfish_evaluation(board, time_limit = 0.01):
     engine = chess.engine.SimpleEngine.popen_uci(STOCKFISH_PATH)
     result = engine.analyse(board, chess.engine.Limit(time=time_limit))
     engine.quit()
-    return result['score'].relative.score()
+    score = result['score'].white().score()
+    print("SCORE FOR WHITE - ", score)
+    return score
 
 #Evaluate current state using current available material
 def material_evaluation(board):
@@ -238,6 +240,26 @@ class ChessEnv(gym.Env):
         mask = np.array([move in legal_actions for move in all_actions], dtype=bool)
         return mask
 
+    def evaluate_postion(self):
+        match self.use_eval:
+                #Use material left for intermediate evaluation
+                case "material":
+                    reward = material_evaluation(self.board)
+                    # If agent moves as black, set opposite reward
+                #Use Stockfish engine for intermediate evaluation    
+                case "stockfish":
+                    eval_cp = stockfish_evaluation(self.board)
+                    #Stockfish evaluation returns a NoneType if it sees a mate
+                    if eval_cp is None:
+                        reward = -1
+                    else:
+                        reward = np.clip(eval_cp / 1000.0, -0.9, 0.9)  # normalize centipawns given by the engine
+                case _:
+                        reward = 0
+        if self.color == "BLACK":
+            reward = -reward
+        return reward        
+
     # =====================================================
     # Core Gymnasium functions
     # =====================================================
@@ -270,38 +292,23 @@ class ChessEnv(gym.Env):
             #reward = (1 if result == '1-0' else 1 if result == '0-1' else 0)
             reward = (1 if result == '1-0' else -1 if result == '0-1' else 0)
             print("REWARD - TERMINATED - ",reward)
+            self.step_counter += 1
             return self._observe(), reward, terminated, truncated, {}
     
                         
         # INTERMEDIATE REWARDS
         if self.reward_type == "dense" or truncated:
-            match self.use_eval:
-                #Use material left for intermediate evaluation
-                case "material":
-                    reward = material_evaluation(self.board)
-                    # If agent moves as black, set opposite reward
-                    if self.color == "BLACK":
-                        reward = -reward
-                            
-                #Use Stockfish engine for intermediate evaluation    
-                case "stockfish":
-                    eval_cp = stockfish_evaluation(self.board)
-                    #Stockfish evaluation returns a NoneType if it sees a mate
-                    if eval_cp is None:
-                        reward = -1
-                    else:
-                        reward = np.clip(eval_cp / 1000.0, -0.9, 0.9)  # normalize centipawns given by the engine
-                        reward = -reward
-                case _:
-                        reward = 0
+            reward = self.evaluate_postion():
             
-    
-        # Optional render every few steps, second move render
+            if truncated:
+                return self._observe(), reward, terminated, truncated, {}
+
+        # BOARD RENDERING
         if self.step_counter % self.steps_per_render == 0 and self.render_steps:
                 self.render()
     
-        #IF NOT ENDED BY THE AGENT, OPPONENT MOVES
-        if not terminated or truncated:
+        # OPPONENT MOVES (this if is probably unnecessary)
+        if not terminated:
             match self.rival_agent:
                 case "engine":
                     self.board.push(stockfish_next_move(self.board, self.engine_time_limit))
@@ -311,8 +318,13 @@ class ChessEnv(gym.Env):
                     print("Write your next move")
                     self.board.push(chess.Move.from_uci(input()))
             terminated = self.board.is_game_over(claim_draw = self.claim_draw)
-
-        observation = self._observe()
+        
+        #TERMINAL STATE AFTER OPPONENT MOVE
+        if terminated:
+            reward = -1
+            return self._observe(), reward, terminated, truncated, {}
+            
+        
         info = {'turn': self.board.turn,
                 'castling_rights': self.board.castling_rights,
                 'fullmove_number': self.board.fullmove_number,
@@ -320,7 +332,6 @@ class ChessEnv(gym.Env):
                 'promoted': self.board.promoted,
                 'chess960': self.board.chess960,
                 'ep_square': self.board.ep_square}    
-        self.step_counter += 1
 
         '''
         #Set rewards as the difference of evaluation so it telescopes, avoiding accomulation in dense rewards
@@ -330,9 +341,12 @@ class ChessEnv(gym.Env):
                 reward = reward_delta #* 0.05
         '''     
 
-        # Optional render every few steps
+        # BOARD RENDERING
         if self.step_counter % self.steps_per_render == 0 and self.render_steps:
             self.render()
+            
+        observation = self._observe()    
+        self.step_counter += 1
         
         return observation, reward, terminated, truncated, info
 
