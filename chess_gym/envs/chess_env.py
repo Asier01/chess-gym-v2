@@ -244,96 +244,64 @@ class ChessEnv(gym.Env):
     
     def step(self, action):
 
-        #if illegal action chosen, end the match as a loss with worse reward
+        # LOOK UP IF ILLEGAL ACTION HAS BEEN CHOSEN
         if action not in self._get_legal_moves_index():  
                 #reward = ((-1)/self.step_counter) - 1
                 reward = -1
                 terminated = True
                 truncated = False
                 print("ILLEGAL MOVE")
+                return self._observe(), reward, terminated, truncated, {}
                 
-        else:
-                
-                self.board.push(self._action_to_move(action))
-                result = self.board.result()
-                
-                # is_game_over() checks for fifty-move rule or threefold repetition if claim_draw = true. Checking threefold repetition may be too slow
-                terminated = self.board.is_game_over(claim_draw = self.claim_draw)
-                truncated = self.step_counter > MAX_MOVES
-
-                #reward = (1 if result == '1-0' else -1 if result == '0-1' else 0)
-                if terminated:
-                    #Positive reward if the agents wins, independently of being white or black
-                    #reward = (1 if result == '1-0' else 1 if result == '0-1' else 0)
-                    reward = (1 if result == '1-0' else -1 if result == '0-1' else 0)
-                    print("REWARD - TERMINATED - ",reward)
+        
+        # AGENT MAKES THE MOVE
+        self.board.push(self._action_to_move(action))
                     
-                #elif truncated:
-                else:
-                    match self.use_eval:
-                    
-                        #Use material left for intermediate evaluation
-                        case "material":
-                            reward = material_evaluation(self.board)
-                            # If agent moves as black, set opposite reward
-                            if self.color == "BLACK":
-                                reward = -reward
-                    
-                        #Use Stockfish engine for intermediate evaluation    
-                        case "stockfish":
-                            eval_cp = stockfish_evaluation(self.board)
+    
+        # LOOK IF THE GAME IS OVER
+        # is_game_over() checks for fifty-move rule or threefold repetition if claim_draw = true. Checking threefold repetition may be too slow
+        terminated = self.board.is_game_over(claim_draw = self.claim_draw)
+        truncated = self.step_counter > MAX_MOVES
+        result = self.board.result()
+    
+        # TERMINAL EVALUATION
+        if terminated:
+            #Positive reward if the agents wins, independently of being white or black
+            #reward = (1 if result == '1-0' else 1 if result == '0-1' else 0)
+            reward = (1 if result == '1-0' else -1 if result == '0-1' else 0)
+            print("REWARD - TERMINATED - ",reward)
+            return self._observe(), reward, terminated, truncated, {}
+    
+                        
+        # INTERMEDIATE REWARDS
+        if self.reward_type == "dense" or truncated:
+            match self.use_eval:
+                #Use material left for intermediate evaluation
+                case "material":
+                    reward = material_evaluation(self.board)
+                    # If agent moves as black, set opposite reward
+                    if self.color == "BLACK":
+                        reward = -reward
                             
-                            #Stockfish evaluation returns a NoneType if it sees a mate
-                            if eval_cp is None:
-                                reward = -1
-                            else:
-                                reward = np.clip(eval_cp / 1000.0, -0.9, 0.9)  # normalize centipawns given by the engine
-                                '''
-                                # If agent moves as black, set opposite reward
-                                if self.color == "BLACK":
-                                    reward = -reward
-                                '''
-                                reward = -reward
-                        case _:
-                            reward = 0
-                '''
-                else:
-                    if self.reward_type == "dense":
-                        match self.use_eval:
-                            case "material":
-                                reward = material_evaluation(self.board)
-
-                                # If agent moves as black, set opposite reward
-                                if self.color == "BLACK":
-                                    reward = -reward
-
-                            #Use Stockfish engine for intermediate evaluation    
-                            case "stockfish":
-                                eval_cp = stockfish_evaluation(self.board)
-                                
-                                #Stockfish evaluation returns a NoneType if it sees a mate
-                                if eval_cp is None:
-                                    reward = -1
-                                else:
-                                    reward = np.clip(eval_cp / 1000.0, -0.9, 0.9)  # normalize centipawns given by the engine
-                                    
-                                    # If agent moves as black, set opposite reward
-                                    if self.color == "BLACK":
-                                        reward = -reward
-                                    
-                                    reward = -reward
-                            case _:
-                                reward = 0
+                #Use Stockfish engine for intermediate evaluation    
+                case "stockfish":
+                    eval_cp = stockfish_evaluation(self.board)
+                    #Stockfish evaluation returns a NoneType if it sees a mate
+                    if eval_cp is None:
+                        reward = -1
                     else:
+                        reward = np.clip(eval_cp / 1000.0, -0.9, 0.9)  # normalize centipawns given by the engine
+                        reward = -reward
+                case _:
                         reward = 0
-                '''
-
+            
+    
         # Optional render every few steps, second move render
         if self.step_counter % self.steps_per_render == 0 and self.render_steps:
-            self.render()
-        
+                self.render()
+    
+        #IF NOT ENDED BY THE AGENT, OPPONENT MOVES
         if not terminated or truncated:
-            #Make the engine play the next move of the opposite color
             match self.rival_agent:
                 case "engine":
                     self.board.push(stockfish_next_move(self.board, self.engine_time_limit))
@@ -342,11 +310,8 @@ class ChessEnv(gym.Env):
                 case "human":
                     print("Write your next move")
                     self.board.push(chess.Move.from_uci(input()))
-            terminated = self.board.is_game_over(claim_draw = self.claim_draw)
-            if terminated:
-                reward = -1
-                #print("REWARD - LOSE - ",reward)
-        
+                terminated = self.board.is_game_over(claim_draw = self.claim_draw)
+
         observation = self._observe()
         info = {'turn': self.board.turn,
                 'castling_rights': self.board.castling_rights,
@@ -371,6 +336,8 @@ class ChessEnv(gym.Env):
         
         return observation, reward, terminated, truncated, info
 
+
+    
     
     #Gymnasium requires handling the 'seed' and 'options' arguments 
     def reset(self, seed=None, options=None):
