@@ -45,7 +45,7 @@ def stockfish_evaluation(board, time_limit = 0.01):
     engine = chess.engine.SimpleEngine.popen_uci(STOCKFISH_PATH)
     result = engine.analyse(board, chess.engine.Limit(time=time_limit))
     engine.quit()
-    return result['score']
+    return result['score'].white()
 
 #Evaluate current state using current available material
 def material_evaluation(board):
@@ -249,14 +249,14 @@ class ChessEnv(gym.Env):
                     result = stockfish_evaluation(self.board)
                     
                     #Stockfish evaluation returns a NoneType if it sees a mate
-                    if result.white().score() is None:
+                    if result.score() is None:
                         # See which player is mating
-                        if result.white().mate() != 0:
+                        if result.mate() != 0:
                             reward = 1
                         else:
                             reward = -1
                     else:
-                        reward = np.clip(eval_cp / 1000.0, -0.9, 0.9)  # normalize centipawns given by the engine
+                        reward = np.clip(result.score() / 1000.0, -0.9, 0.9)  # normalize centipawns given by the engine
                 case _:
                         reward = 0
         if self.color == "BLACK":
