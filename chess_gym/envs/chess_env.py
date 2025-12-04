@@ -310,7 +310,7 @@ class ChessEnv(gym.Env):
                 case "human":
                     print("Write your next move")
                     self.board.push(chess.Move.from_uci(input()))
-                terminated = self.board.is_game_over(claim_draw = self.claim_draw)
+            terminated = self.board.is_game_over(claim_draw = self.claim_draw)
 
         observation = self._observe()
         info = {'turn': self.board.turn,
