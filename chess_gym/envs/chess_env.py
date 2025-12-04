@@ -368,7 +368,7 @@ class ChessEnv(gym.Env):
         if self.step_counter % self.steps_per_render == 0 and self.render_steps:
             self.render()
         
-        
+        print("REWARD - ",reward)
         return observation, reward, terminated, truncated, info
 
     
