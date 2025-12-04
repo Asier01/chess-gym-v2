@@ -264,7 +264,7 @@ class ChessEnv(gym.Env):
                 if terminated:
                     #Positive reward if the agents wins, independently of being white or black
                     #reward = (1 if result == '1-0' else 1 if result == '0-1' else 0)
-                    reward = (50 if result == '1-0' else -50 if result == '0-1' else 0)
+                    reward = (1 if result == '1-0' else -1 if result == '0-1' else 0)
                     print("REWARD - TERMINATED - ",reward)
                     
                 elif truncated:
@@ -355,13 +355,13 @@ class ChessEnv(gym.Env):
                 'ep_square': self.board.ep_square}    
         self.step_counter += 1
 
-        
+        '''
         #Set rewards as the difference of evaluation so it telescopes, avoiding accomulation in dense rewards
         if not terminated and self.reward_type=="dense":
                 reward_delta = (reward - self.last_reward)
                 self.last_reward = reward 
                 reward = reward_delta #* 0.05
-            
+        '''     
 
         # Optional render every few steps
         if self.step_counter % self.steps_per_render == 0 and self.render_steps:
