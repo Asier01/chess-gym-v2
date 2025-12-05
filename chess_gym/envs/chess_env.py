@@ -365,6 +365,9 @@ class ChessEnv(gym.Env):
             
             self.log_info.append([reward,self.step_counter])
             self.write_log()
+
+            print(self.log_info)
+            
             return self._observe(), reward, terminated, truncated, {}
             
         if self.reward_type=="dense":
