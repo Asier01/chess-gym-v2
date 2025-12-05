@@ -198,7 +198,7 @@ class ChessEnv(gym.Env):
         return observation
 
     def write_log(self):
-        with open('VS_'self.rival_agent+'_Reward_type_'+ self.reward_type + '_Eval_type_'+''self.use_eval+'_data.csv', 'a', newline='') as f:
+        with open('VS_'self.rival_agent+'_Reward_type_'+ self.reward_type + '_Eval_type_'+''self.use_eval+'_Engine_time_limit_'+self.engine_time_limit+'_data.csv', 'a', newline='') as f:
             writer = csv.writer(f)
             writer.writerows(self.log_info)
             
