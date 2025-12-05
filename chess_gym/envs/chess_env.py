@@ -309,6 +309,12 @@ class ChessEnv(gym.Env):
             reward = (1 if result == '1-0' else -1 if result == '0-1' else 0)
             if self.color == "BLACK":
                 reward = -reward
+
+            if self.reward_type=="dense":
+                current_eval = reward
+                reward = current_eval - self.last_reward
+                self.last_reward = current_eval
+            
             print("REWARD - TERMINATED - ",reward)
             self.step_counter += 1
             
@@ -351,6 +357,12 @@ class ChessEnv(gym.Env):
             reward = (1 if result == '1-0' else -1 if result == '0-1' else 0)
             if self.color == "BLACK":
                 reward = -reward
+
+            if self.reward_type=="dense":
+                current_eval = reward
+                reward = current_eval - self.last_reward
+                self.last_reward = current_eval
+            
             self.log_info.append([reward,self.step_counter])
             self.write_log()
             return self._observe(), reward, terminated, truncated, {}
