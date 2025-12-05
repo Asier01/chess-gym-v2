@@ -141,7 +141,7 @@ class ChessEnv(gym.Env):
         self.last_reward = 0
         self.rival_agent = rival_agent
         self.engine_time_limit = engine_time_limit
-        self.log_info = [["REWARD","STEPS"]]
+        self.log_info = []
         if observation_mode == 'rgb_array':
             self.observation_space = spaces.Box(low = 0, high = 255,
                                                 shape = (render_size, render_size, 3),
