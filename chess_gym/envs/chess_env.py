@@ -429,7 +429,7 @@ class ChessEnv(gym.Env):
         #print("RESET - PLAYING AS - ",self.color)
         
         self.last_reward = 0
-
+        self.log_info = []
         
         return self._observe(), {}
 
