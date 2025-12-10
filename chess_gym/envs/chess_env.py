@@ -234,21 +234,43 @@ class ChessEnv(gym.Env):
         return MOVE_TO_INDEX.get(move.uci())
 
     def _get_legal_moves_index(self):
+        '''
         legalMoveIndexList = []
         for move in MOVE_TO_INDEX:
                 move = chess.Move.from_uci(move)
                 if move in list(self.board.legal_moves):
                     legalMoveIndexList.append(MOVE_TO_INDEX.get(move.uci()))
         return legalMoveIndexList
+        '''
+        legal_moves = self.board.legal_moves
+        legal_indices = []
+    
+        for move in legal_moves:
+            uci = move.uci()
+            if uci in MOVE_TO_INDEX:
+                legal_indices.append(MOVE_TO_INDEX[uci])
+        print(legal_indices)
+        return legal_indices
     
     def get_action_mask(self):
+        '''
         legal_actions = self._get_legal_moves_index()
         all_actions = set(range(ACTION_SPACE_SIZE))
         mask = np.array([move in legal_actions for move in all_actions], dtype=bool)
-        if len(mask)==0:
-            print(AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA)
         return mask
+        '''
+        mask = np.zeros(ACTION_SPACE_SIZE, dtype=bool)
+        legal_actions = self._get_legal_moves_index()
 
+        for moveIndex in legal_actions:
+            mask[moveIndex] = True
+    
+        #MaskablePPO requires at least one True action, so to avoid unwanted crashes mid-execution
+        if mask.sum() == 0:
+            mask[0] = True  
+    
+        return mask
+        
     def evaluate_position(self):
         match self.use_eval:
                 #Use material left for intermediate evaluation
