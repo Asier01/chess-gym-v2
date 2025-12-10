@@ -267,6 +267,11 @@ class ChessEnv(gym.Env):
         #MaskablePPO requires at least one True action, so to avoid unwanted crashes mid-execution
         if mask.sum() == 0:
             mask[0] = True  
+        if not mask.any():
+            print("ERROR: EMPTY MASK")
+            print("Legal moves:", self.board.legal_moves)
+            print("Board FEN:", self.board.fen())
+            raise RuntimeError("Empty action mask encountered!")
         return mask
         
     def evaluate_position(self):
