@@ -268,11 +268,12 @@ class ChessEnv(gym.Env):
         if mask.sum() == 0:
             mask[0] = True  
             
-        print("Mask dtype:", mask.dtype)
-        print("Mask shape:", mask.shape)
+        
 
         if not mask.any():
             print("ERROR: EMPTY MASK")
+            print("Mask dtype:", mask.dtype)
+            print("Mask shape:", mask.shape)
             print("Legal moves:", self.board.legal_moves)
             print("Board FEN:", self.board.fen())
             raise RuntimeError("Empty action mask encountered!")
