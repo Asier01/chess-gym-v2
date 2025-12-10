@@ -245,6 +245,8 @@ class ChessEnv(gym.Env):
         legal_actions = self._get_legal_moves_index()
         all_actions = set(range(ACTION_SPACE_SIZE))
         mask = np.array([move in legal_actions for move in all_actions], dtype=bool)
+        if len(mask)==0
+            print(AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA)
         return mask
 
     def evaluate_position(self):
