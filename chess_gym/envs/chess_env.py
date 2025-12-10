@@ -249,7 +249,6 @@ class ChessEnv(gym.Env):
             uci = move.uci()
             if uci in MOVE_TO_INDEX:
                 legal_indices.append(MOVE_TO_INDEX[uci])
-        print(legal_indices)
         return legal_indices
     
     def get_action_mask(self):
@@ -268,7 +267,6 @@ class ChessEnv(gym.Env):
         #MaskablePPO requires at least one True action, so to avoid unwanted crashes mid-execution
         if mask.sum() == 0:
             mask[0] = True  
-    
         return mask
         
     def evaluate_position(self):
