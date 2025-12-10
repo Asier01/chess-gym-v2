@@ -315,7 +315,7 @@ class ChessEnv(gym.Env):
                 reward = current_eval - self.last_reward
                 self.last_reward = current_eval
             
-            print("REWARD - TERMINATED - ",reward)
+            #print("REWARD - TERMINATED - ",reward)
             self.step_counter += 1
             
             self.log_info.append([reward,self.step_counter])
@@ -366,7 +366,7 @@ class ChessEnv(gym.Env):
             self.log_info.append([reward,self.step_counter])
             self.write_log()
 
-            print(self.log_info)
+            #print(self.log_info)
             
             return self._observe(), reward, terminated, truncated, {}
             
