@@ -271,17 +271,16 @@ class ChessEnv(gym.Env):
         
 
        if np.isnan(mask).any():
-            print("MASK HAS NANs!", mask)
-            raise RuntimeError("Mask contains NaNs")
-        
+           print("MASK HAS NANs!", mask)
+           raise RuntimeError("Mask contains NaNs")
        if mask.dtype != bool:
-            print("MASK WRONG DTYPE:", mask.dtype)
-            mask = mask.astype(bool)
+           print("MASK WRONG DTYPE:", mask.dtype)
+           mask = mask.astype(bool)
         
        if mask.shape != (ACTION_SPACE_SIZE,):
-            print("MASK WRONG SHAPE:", mask.shape)
-            mask = mask.reshape((ACTION_SPACE_SIZE,))
-        return mask
+           print("MASK WRONG SHAPE:", mask.shape)
+           mask = mask.reshape((ACTION_SPACE_SIZE,))
+       return mask
         
     def evaluate_position(self):
         match self.use_eval:
