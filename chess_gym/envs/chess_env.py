@@ -270,13 +270,17 @@ class ChessEnv(gym.Env):
             
         
 
-        if not mask.any():
-            print("ERROR: EMPTY MASK")
-            print("Mask dtype:", mask.dtype)
-            print("Mask shape:", mask.shape)
-            print("Legal moves:", self.board.legal_moves)
-            print("Board FEN:", self.board.fen())
-            raise RuntimeError("Empty action mask encountered!")
+       if np.isnan(mask).any():
+            print("MASK HAS NANs!", mask)
+            raise RuntimeError("Mask contains NaNs")
+        
+       if mask.dtype != bool:
+            print("MASK WRONG DTYPE:", mask.dtype)
+            mask = mask.astype(bool)
+        
+       if mask.shape != (ACTION_SPACE_SIZE,):
+            print("MASK WRONG SHAPE:", mask.shape)
+            mask = mask.reshape((ACTION_SPACE_SIZE,))
         return mask
         
     def evaluate_position(self):
