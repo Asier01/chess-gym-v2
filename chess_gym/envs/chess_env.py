@@ -267,20 +267,17 @@ class ChessEnv(gym.Env):
         #MaskablePPO requires at least one True action, so to avoid unwanted crashes mid-execution
         if mask.sum() == 0:
             mask[0] = True  
-            
+        if np.isnan(mask).any():
+            print("MASK HAS NANs!", mask)
+            raise RuntimeError("Mask contains NaNs")
+        if mask.dtype != bool:
+            print("MASK WRONG DTYPE:", mask.dtype)
+            mask = mask.astype(bool)
         
-
-       if np.isnan(mask).any():
-           print("MASK HAS NANs!", mask)
-           raise RuntimeError("Mask contains NaNs")
-       if mask.dtype != bool:
-           print("MASK WRONG DTYPE:", mask.dtype)
-           mask = mask.astype(bool)
-        
-       if mask.shape != (ACTION_SPACE_SIZE,):
-           print("MASK WRONG SHAPE:", mask.shape)
-           mask = mask.reshape((ACTION_SPACE_SIZE,))
-       return mask
+        if mask.shape != (ACTION_SPACE_SIZE,):
+            print("MASK WRONG SHAPE:", mask.shape)
+            mask = mask.reshape((ACTION_SPACE_SIZE,))
+        return mask
         
     def evaluate_position(self):
         match self.use_eval:
