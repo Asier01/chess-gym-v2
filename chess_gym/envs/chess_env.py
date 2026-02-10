@@ -397,6 +397,14 @@ class ChessEnv(gym.Env):
         
         #TERMINAL STATE AFTER OPPONENT MOVE
         if terminated:
+            
+            ###########################
+            #PROVISIONAL REWARD CALCULATION FOR DEBUGGING
+            self.step_counter += 1
+            reward = self.step_counter
+            return self._observe(), reward, terminated, truncated, {}
+            ###########################
+
             result = self.board.result()
             reward = (1 if result == '1-0' else -1 if result == '0-1' else 0)
             if self.color == "BLACK":
