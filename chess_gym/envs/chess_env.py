@@ -346,6 +346,8 @@ class ChessEnv(gym.Env):
             #PROVISIONAL REWARD CALCULATION FOR DEBUGGING
             self.step_counter += 1
             reward = self.step_counter
+            self.log_info.append([reward,self.step_counter])
+            self.write_log()
             return self._observe(), reward, terminated, truncated, {}
             ###########################
             
@@ -402,6 +404,8 @@ class ChessEnv(gym.Env):
             #PROVISIONAL REWARD CALCULATION FOR DEBUGGING
             self.step_counter += 1
             reward = self.step_counter
+            self.log_info.append([reward,self.step_counter])
+            self.write_log()
             return self._observe(), reward, terminated, truncated, {}
             ###########################
 
