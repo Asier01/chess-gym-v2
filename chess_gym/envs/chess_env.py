@@ -402,7 +402,6 @@ class ChessEnv(gym.Env):
             #PROVISIONAL REWARD CALCULATION FOR DEBUGGING
             self.step_counter += 1
             reward = self.step_counter
-            print("AAAAAAA")
             return self._observe(), reward, terminated, truncated, {}
             ###########################
 
