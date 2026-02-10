@@ -334,9 +334,21 @@ class ChessEnv(gym.Env):
         terminated = self.board.is_game_over(claim_draw = self.claim_draw)
         truncated = self.step_counter > MAX_MOVES
         result = self.board.result()
-    
+        
+        ###########################
+        #PROVISIONAL REWARD CALCULATION FOR DEBUGGING
+        truncated = False
+        ###########################
+        
         # TERMINAL EVALUATION
         if terminated:
+            ###########################
+            #PROVISIONAL REWARD CALCULATION FOR DEBUGGING
+            self.step_counter += 1
+            reward = self.step_counter
+            return self._observe(), reward, terminated, truncated, {}
+            ###########################
+            
             #Positive reward if the agents wins
             reward = (1 if result == '1-0' else -1 if result == '0-1' else 0)
             if self.color == "BLACK":
