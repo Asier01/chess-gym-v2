@@ -201,9 +201,6 @@ class ChessEnv(gym.Env):
         
     def _observe(self):
         observation = (self._get_image() if self.observation_mode == 'rgb_array' else self._get_piece_configuration())
-        if not self.get_action_mask().any():
-            print("BAD MASK STATE")
-            print(self.board)
         return observation
 
     def write_log(self):
