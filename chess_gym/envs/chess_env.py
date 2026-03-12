@@ -153,7 +153,7 @@ class ChessEnv(gym.Env):
                                                 shape = (8, 8),
                                                 dtype = np.float64))
             '''
-            elf.observation_space = spaces.Box(low=-6, high=6, shape=(64,), dtype=np.float32)
+            self.observation_space = spaces.Box(low=-6, high=6, shape=(64,), dtype=np.float32)
             self.observation_space.n = self.observation_space.shape[0]
         else:
             raise Exception("observation_mode must be either rgb_array or piece_map")
