@@ -148,9 +148,12 @@ class ChessEnv(gym.Env):
                                                 #dtype = np.uint8)
                                                 dtype = np.float64)
         elif observation_mode == 'piece_map':
+            '''
             self.observation_space = spaces.flatten_space(spaces.Box(low = -6, high = 6,
                                                 shape = (8, 8),
                                                 dtype = np.float64))
+            '''
+            elf.observation_space = spaces.Box(low=-6, high=6, shape=(64,), dtype=np.float32)
             self.observation_space.n = self.observation_space.shape[0]
         else:
             raise Exception("observation_mode must be either rgb_array or piece_map")
@@ -194,7 +197,7 @@ class ChessEnv(gym.Env):
         for square, piece in zip(self.board.piece_map().keys(), self.board.piece_map().values()):
             piece_map[square] = piece.piece_type * (piece.color * 2 - 1)
             
-        return piece_map
+        return piece_map.astype(np.float32)
         
     def _observe(self):
         observation = (self._get_image() if self.observation_mode == 'rgb_array' else self._get_piece_configuration())
@@ -278,7 +281,7 @@ class ChessEnv(gym.Env):
     
         #MaskablePPO requires at least one True action, so to avoid unwanted crashes mid-execution
         if not mask.any():
-            mask[0] = True  
+            return np.ones(ACTION_SPACE_SIZE, dtype=bool)
         '''
         if np.isnan(mask).any():
             print("MASK HAS NAN", mask)
