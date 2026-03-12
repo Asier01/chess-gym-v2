@@ -142,6 +142,7 @@ class ChessEnv(gym.Env):
         self.rival_agent = rival_agent
         self.engine_time_limit = engine_time_limit
         self.log_info = []
+        
         if observation_mode == 'rgb_array':
             self.observation_space = spaces.Box(low = 0, high = 255,
                                                 shape = (render_size, render_size, 3),
@@ -176,6 +177,8 @@ class ChessEnv(gym.Env):
         self.viewer = None
 
         self.action_space = MoveSpace(self.board)
+        
+        self._last_obs = self._observe()
 
         print("ACTUAL ACTION SPACE SIZE",self.action_space.n)
         print("THEORETICAL ACTION SPACE SIZE", ACTION_SPACE_SIZE)
