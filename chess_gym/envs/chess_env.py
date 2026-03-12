@@ -319,7 +319,8 @@ class ChessEnv(gym.Env):
     def step(self, action):
 
         # LOOK UP IF ILLEGAL ACTION HAS BEEN CHOSEN
-        if action not in self._get_legal_moves_index():  
+        #if action not in self._get_legal_moves_index():
+        if not self.get_action_mask()[action]:
                 #reward = ((-1)/self.step_counter) - 1
                 reward = -1
                 terminated = True
@@ -449,8 +450,8 @@ class ChessEnv(gym.Env):
                 'halfmove_clock': self.board.halfmove_clock,
                 'promoted': self.board.promoted,
                 'chess960': self.board.chess960,
-                'ep_square': self.board.ep_square,
-                'action_mask': self.get_action_mask()}    
+                'ep_square': self.board.ep_square}
+                #'action_mask': self.get_action_mask()    
    
 
         # BOARD RENDERING
