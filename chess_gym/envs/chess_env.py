@@ -100,7 +100,6 @@ INDEX_TO_MOVE = {i: m for i, m in enumerate(ALL_POSSIBLE_MOVES)}
 #print(INDEX_TO_MOVE)
 
 ACTION_SPACE_SIZE = len(ALL_POSSIBLE_MOVES) 
-print("ACTION_SPACE_SIZE",ACTION_SPACE_SIZE)
 
 
 
@@ -174,6 +173,9 @@ class ChessEnv(gym.Env):
         self.viewer = None
 
         self.action_space = MoveSpace(self.board)
+
+        print("ACTUAL ACTION SPACE SIZE",self.action_space.n)
+        print("THEORETICAL ACTION SPACE SIZE, ACTION_SPACE_SIZE"
 
 
     # =====================================================
