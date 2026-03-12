@@ -463,6 +463,16 @@ class ChessEnv(gym.Env):
             
         observation = self._observe()    
         self.step_counter += 1
+
+        ###########################
+        legal = set(self._get_legal_moves_index())
+        mask_indices = {i for i, v in enumerate(self.get_action_mask()) if v}
+        
+        if legal != mask_indices:
+            print("MASK MISMATCH")
+            print("legal:", len(legal))
+            print("mask:", len(mask_indices))
+        ###########################
         
         return observation, reward, terminated, truncated, info
 
