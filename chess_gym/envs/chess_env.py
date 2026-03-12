@@ -252,12 +252,18 @@ class ChessEnv(gym.Env):
         return legal_indices
     
     def get_action_mask(self):
+
         '''
         legal_actions = self._get_legal_moves_index()
         all_actions = set(range(ACTION_SPACE_SIZE))
         mask = np.array([move in legal_actions for move in all_actions], dtype=bool)
         return mask
         '''
+        
+        #In case SB3 or any other training process requieres the mask after a terminal state
+        if self.board.is_game_over():
+            return np.ones(ACTION_SPACE_SIZE, dtype=bool)
+        
         mask = np.zeros(ACTION_SPACE_SIZE, dtype=bool)
         legal_actions = self._get_legal_moves_index()
 
@@ -265,11 +271,13 @@ class ChessEnv(gym.Env):
             mask[moveIndex] = True
     
         #MaskablePPO requires at least one True action, so to avoid unwanted crashes mid-execution
-        if mask.sum() == 0:
+        if not mask.any():
             mask[0] = True  
+        '''
         if np.isnan(mask).any():
-            print("MASK HAS NANs!", mask)
-            raise RuntimeError("Mask contains NaNs")
+            print("MASK HAS NAN", mask)
+            raise RuntimeError("Mask contains NaN")
+        '''
         if mask.dtype != bool:
             print("MASK WRONG DTYPE:", mask.dtype)
             mask = mask.astype(bool)
@@ -345,7 +353,7 @@ class ChessEnv(gym.Env):
             ###########################
             #PROVISIONAL REWARD CALCULATION FOR DEBUGGING
             self.step_counter += 1
-            reward = -self.step_counter
+            reward = np.clip(-self.step_counter, -10,10)
             self.log_info.append([reward,self.step_counter])
             self.write_log()
             return self._observe(), reward, terminated, truncated, {}
@@ -403,7 +411,7 @@ class ChessEnv(gym.Env):
             ###########################
             #PROVISIONAL REWARD CALCULATION FOR DEBUGGING
             self.step_counter += 1
-            reward = -self.step_counter
+            reward = np.clip(-self.step_counter, -10,10)
             self.log_info.append([reward,self.step_counter])
             self.write_log()
             return self._observe(), reward, terminated, truncated, {}
