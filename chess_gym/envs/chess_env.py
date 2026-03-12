@@ -177,8 +177,6 @@ class ChessEnv(gym.Env):
         self.viewer = None
 
         self.action_space = MoveSpace(self.board)
-        
-        self._last_obs = self._observe()
 
         print("ACTUAL ACTION SPACE SIZE",self.action_space.n)
         print("THEORETICAL ACTION SPACE SIZE", ACTION_SPACE_SIZE)
