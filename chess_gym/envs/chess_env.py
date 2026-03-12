@@ -261,7 +261,16 @@ class ChessEnv(gym.Env):
         return legal_indices
     
     def get_action_mask(self):
+        ##DEBUGGING for mask and observation mismatchs
+        ##############################
+        obs = self._observe()
 
+        if hasattr(self, "_last_obs"):
+            if not np.array_equal(obs, self._last_obs):
+                print("----------Observation changed before mask computation----------")
+        
+        self._last_obs = obs
+        ##############################
         '''
         legal_actions = self._get_legal_moves_index()
         all_actions = set(range(ACTION_SPACE_SIZE))
